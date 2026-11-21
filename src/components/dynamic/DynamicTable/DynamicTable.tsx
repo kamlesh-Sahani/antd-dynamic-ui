@@ -31,10 +31,29 @@ export default function DynamicTable({
   const [isFirstCall, setIsFirstCall] = useState(true);
   const [filters, setFilters] = useGridFilters(filterKey);
 
-  // ─── Dynamic scroll height via ResizeObserver ─────────────────────────────
+  // ─── Dynamic scroll height via ResizeObserver (throttled via RAF) ─────────
   const [scrollY, setScrollY] = useState<number>(400);
   const observerRef = useRef<ResizeObserver | null>(null);
   const tableRef = useRef<HTMLDivElement | null>(null);
+  const resizeRafRef = useRef<number | null>(null);
+  const scrollbarRafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      if (resizeRafRef.current) {
+        cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = null;
+      }
+      if (scrollbarRafRef.current) {
+        cancelAnimationFrame(scrollbarRafRef.current);
+        scrollbarRafRef.current = null;
+      }
+    };
+  }, []);
 
   const activeFiltersObj = useMemo(() => {
 
@@ -224,15 +243,22 @@ export default function DynamicTable({
       observerRef.current.disconnect();
       observerRef.current = null;
     }
+    if (resizeRafRef.current) {
+      cancelAnimationFrame(resizeRafRef.current);
+      resizeRafRef.current = null;
+    }
 
     tableRef.current = node;
 
     if (node) {
       observerRef.current = new ResizeObserver((entries) => {
-        const height = entries[0]?.contentRect?.height ?? 400;
-        // Reserve: table header ~55px, pagination ~56px, border/padding ~10px
-        const available = Math.max(height - 100, 200);
-        setScrollY(available);
+        if (resizeRafRef.current) cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = requestAnimationFrame(() => {
+          const height = entries[0]?.contentRect?.height ?? 400;
+          // Reserve: table header ~55px, pagination ~56px, border/padding ~10px
+          const available = Math.max(height - 100, 200);
+          setScrollY(available);
+        });
       });
       observerRef.current.observe(node);
     }
@@ -276,42 +302,46 @@ export default function DynamicTable({
 
   const applyScrollbarStyles = useCallback(() => {
     if (!tableRef.current || rows.length === 0) return;
+    if (scrollbarRafRef.current) cancelAnimationFrame(scrollbarRafRef.current);
 
-    // Check if content actually overflows horizontally
-    const scrollDiv = tableRef.current.querySelector<HTMLElement>('.ant-table-tbody-virtual-holder-inner');
-    const xScrollThumb = tableRef.current.querySelector<HTMLElement>(
-      '.ant-table-tbody-virtual-scrollbar-horizontal .ant-table-tbody-virtual-scrollbar-thumb'
-    );
+    scrollbarRafRef.current = requestAnimationFrame(() => {
+      if (!tableRef.current) return;
+      // Check if content actually overflows horizontally
+      const scrollDiv = tableRef.current.querySelector<HTMLElement>('.ant-table-tbody-virtual-holder-inner');
+      const xScrollThumb = tableRef.current.querySelector<HTMLElement>(
+        '.ant-table-tbody-virtual-scrollbar-horizontal .ant-table-tbody-virtual-scrollbar-thumb'
+      );
 
-    const hasOverflow = scrollDiv ? (scrollDiv.scrollWidth - scrollDiv.clientWidth) >= 5 : false;
+      const hasOverflow = scrollDiv ? (scrollDiv.scrollWidth - scrollDiv.clientWidth) >= 5 : false;
 
-    if (xScrollThumb && scrollDiv) {
-      xScrollThumb.style.display = hasOverflow ? 'block' : 'none';
-      setShowScrollbarControl(hasOverflow);
-    }
-
-    // Force the virtual horizontal scrollbar to be visible and apply height ONLY if overflowing
-    const hScrollBar = tableRef.current.querySelector<HTMLElement>(
-      '.ant-table-tbody-virtual-scrollbar-horizontal'
-    );
-    if (hScrollBar) {
-      if (hasOverflow) {
-        hScrollBar.style.setProperty('display', 'block', 'important');
-        hScrollBar.style.setProperty('height', `${scrollbarHeight}px`, 'important');
-        hScrollBar.style.setProperty('visibility', 'visible', 'important');
-        hScrollBar.style.setProperty('opacity', '1', 'important');
-      } else {
-        hScrollBar.style.setProperty('display', 'none', 'important');
-        hScrollBar.style.setProperty('height', '0px', 'important');
-        hScrollBar.style.setProperty('visibility', 'hidden', 'important');
-        hScrollBar.style.setProperty('opacity', '0', 'important');
+      if (xScrollThumb && scrollDiv) {
+        xScrollThumb.style.display = hasOverflow ? 'block' : 'none';
+        setShowScrollbarControl(hasOverflow);
       }
-    }
-  }, [rows, scrollbarHeight]);
+
+      // Force the virtual horizontal scrollbar to be visible and apply height ONLY if overflowing
+      const hScrollBar = tableRef.current.querySelector<HTMLElement>(
+        '.ant-table-tbody-virtual-scrollbar-horizontal'
+      );
+      if (hScrollBar) {
+        if (hasOverflow) {
+          hScrollBar.style.setProperty('display', 'block', 'important');
+          hScrollBar.style.setProperty('height', `${scrollbarHeight}px`, 'important');
+          hScrollBar.style.setProperty('visibility', 'visible', 'important');
+          hScrollBar.style.setProperty('opacity', '1', 'important');
+        } else {
+          hScrollBar.style.setProperty('display', 'none', 'important');
+          hScrollBar.style.setProperty('height', '0px', 'important');
+          hScrollBar.style.setProperty('visibility', 'hidden', 'important');
+          hScrollBar.style.setProperty('opacity', '0', 'important');
+        }
+      }
+    });
+  }, [rows.length, scrollbarHeight]);
 
   useEffect(() => {
     applyScrollbarStyles();
-  }, [rows, columns, response.data, response.loading, scrollbarHeight, applyScrollbarStyles]);
+  }, [rows.length, columns.length, response.loading, scrollbarHeight, applyScrollbarStyles]);
 
   const handleScrollbarHeightChange = useCallback((height: number) => {
     setScrollbarHeight(height);
@@ -321,6 +351,11 @@ export default function DynamicTable({
     const calculatedWidth = columns.reduce((acc, col) => acc + (Number(col.width) || 150), 0);
     return Math.max(calculatedWidth, 800); // Minimum 800 to prevent squishing
   }, [columns]);
+
+  // Adaptive virtualization threshold for large row counts
+  const isVirtual = tableProps.virtual !== undefined
+    ? tableProps.virtual
+    : (rows.length > 50 && typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
 
   // ─── Initial loading state (no data yet) ──────────────────────────────────
   if (response.loading && isFirstCall && apiData?.apiUrl) {
@@ -349,7 +384,7 @@ export default function DynamicTable({
         theme={{ components: { Table: TABLE_THEME } }}
       >
         <Table<any>
-          virtual={tableProps.virtual ?? false}
+          virtual={isVirtual}
           {...tableProps}
           bordered={bordered}
           columns={columns}

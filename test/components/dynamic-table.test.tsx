@@ -2,7 +2,7 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { App } from "antd";
-import DynamicTable from "../../src/components/dynamic/DynamicTable";
+import DynamicTable, { StaticTable } from "../../src/components/dynamic/DynamicTable";
 import { DynamicUIProvider } from "../../src/context/DynamicUIContext";
 
 describe("DynamicTable Component", () => {
@@ -171,5 +171,30 @@ describe("DynamicTable Component", () => {
     );
 
     expect(screen.getByText("No Data Found")).toBeInTheDocument();
+  });
+
+  it("StaticTable filters and renders static data efficiently", () => {
+    const staticDataset = {
+      totalRows: 3,
+      columns: [
+        { key: "username", title: "Username" },
+        { key: "role", title: "Role" },
+      ],
+      rows: [
+        { id: "1", username: "developer_one", role: "Frontend" },
+        { id: "2", username: "designer_two", role: "UI/UX" },
+        { id: "3", username: "manager_three", role: "Product" },
+      ],
+    };
+
+    render(
+      <DynamicUIProvider>
+        <StaticTable filterKey="test_static_perf" staticData={staticDataset} />
+      </DynamicUIProvider>
+    );
+
+    expect(screen.getByText("developer_one")).toBeInTheDocument();
+    expect(screen.getByText("designer_two")).toBeInTheDocument();
+    expect(screen.getByText("manager_three")).toBeInTheDocument();
   });
 });

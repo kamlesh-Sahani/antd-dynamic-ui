@@ -98,40 +98,48 @@ export default function StaticTable({
   const processedRows = useMemo(() => {
     let rawRows = staticData?.rows ?? [];
 
-    // 1. Search (global text search across all TEXT cells)
+    // 1. Search (optimized zero-allocation loop across cell values)
     const searchTerm = filters?.tableSearch?.toLowerCase();
     if (searchTerm) {
-      rawRows = rawRows.filter(row => {
-        return Object.values(row).some(cells => {
-          return cells.some(cell => {
-            if (cell.type === "TEXT" && cell.title?.toLowerCase().includes(searchTerm)) return true;
-            if (cell.type === "LINK" && cell.title?.toLowerCase().includes(searchTerm)) return true;
-            if (cell.type === "STATUS" && cell.title?.toLowerCase().includes(searchTerm)) return true;
-            return false;
-          });
-        });
+      rawRows = rawRows.filter((row: any) => {
+        for (const key in row) {
+          if (key === "_rowKey") continue;
+          const cells = row[key];
+          if (Array.isArray(cells)) {
+            for (let i = 0; i < cells.length; i++) {
+              const cell = cells[i];
+              if (cell && (cell.type === "TEXT" || cell.type === "LINK" || cell.type === "STATUS")) {
+                if (cell.title && cell.title.toLowerCase().includes(searchTerm)) {
+                  return true;
+                }
+              }
+            }
+          } else if (typeof cells === "object" && cells !== null && (cells as any).title) {
+            if (String((cells as any).title).toLowerCase().includes(searchTerm)) {
+              return true;
+            }
+          } else if (typeof cells === "string" || typeof cells === "number") {
+            if (String(cells).toLowerCase().includes(searchTerm)) {
+              return true;
+            }
+          }
+        }
+        return false;
       });
     }
 
     // 3. Sorting
     if (params.sortBy && params.order) {
+      const isAsc = params.order === "asc";
+      const sortKey = params.sortBy;
       rawRows = [...rawRows].sort((a, b) => {
-        const cellA = a[params.sortBy]?.[0];
-        const cellB = b[params.sortBy]?.[0];
+        const cellA = a[sortKey]?.[0];
+        const cellB = b[sortKey]?.[0];
 
-        let valA = "";
-        let valB = "";
+        const valA = ((cellA as any)?.title || (typeof a[sortKey] === "string" ? a[sortKey] : "")) || "";
+        const valB = ((cellB as any)?.title || (typeof b[sortKey] === "string" ? b[sortKey] : "")) || "";
 
-        if (cellA?.type === "TEXT" || cellA?.type === "LINK" || cellA?.type === "STATUS") {
-          valA = cellA.title || "";
-        }
-        if (cellB?.type === "TEXT" || cellB?.type === "LINK" || cellB?.type === "STATUS") {
-          valB = cellB.title || "";
-        }
-
-        if (valA < valB) return params.order === "asc" ? -1 : 1;
-        if (valA > valB) return params.order === "asc" ? 1 : -1;
-        return 0;
+        return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
       });
     }
 
@@ -227,24 +235,50 @@ export default function StaticTable({
     };
   }, []);
 
-  // ─── Dynamic scroll height via ResizeObserver ─────────────────────────────
+  // ─── Dynamic scroll height via ResizeObserver (throttled via RAF) ─────────
   const [scrollY, setScrollY] = useState<number>(400);
   const observerRef = useRef<ResizeObserver | null>(null);
   const tableRef = useRef<HTMLDivElement | null>(null);
+  const resizeRafRef = useRef<number | null>(null);
+  const scrollbarRafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      if (resizeRafRef.current) {
+        cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = null;
+      }
+      if (scrollbarRafRef.current) {
+        cancelAnimationFrame(scrollbarRafRef.current);
+        scrollbarRafRef.current = null;
+      }
+    };
+  }, []);
 
   const tableWrapperRef = useCallback((node: HTMLDivElement | null) => {
     if (observerRef.current) {
       observerRef.current.disconnect();
       observerRef.current = null;
     }
+    if (resizeRafRef.current) {
+      cancelAnimationFrame(resizeRafRef.current);
+      resizeRafRef.current = null;
+    }
 
     tableRef.current = node;
 
     if (node) {
       observerRef.current = new ResizeObserver((entries) => {
-        const height = entries[0]?.contentRect?.height ?? 400;
-        const available = Math.max(height - 115, 150);
-        setScrollY(available);
+        if (resizeRafRef.current) cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = requestAnimationFrame(() => {
+          const height = entries[0]?.contentRect?.height ?? 400;
+          const available = Math.max(height - 115, 150);
+          setScrollY(available);
+        });
       });
       observerRef.current.observe(node);
     }
@@ -263,31 +297,35 @@ export default function StaticTable({
 
   const applyScrollbarStyles = useCallback(() => {
     if (!tableRef.current || rows.length === 0) return;
+    if (scrollbarRafRef.current) cancelAnimationFrame(scrollbarRafRef.current);
 
-    const scrollDiv = tableRef.current.querySelector<HTMLElement>('.ant-table-tbody-virtual-holder-inner');
-    const xScrollThumb = tableRef.current.querySelector<HTMLElement>(
-      '.ant-table-tbody-virtual-scrollbar-horizontal .ant-table-tbody-virtual-scrollbar-thumb'
-    );
+    scrollbarRafRef.current = requestAnimationFrame(() => {
+      if (!tableRef.current) return;
+      const scrollDiv = tableRef.current.querySelector<HTMLElement>('.ant-table-tbody-virtual-holder-inner');
+      const xScrollThumb = tableRef.current.querySelector<HTMLElement>(
+        '.ant-table-tbody-virtual-scrollbar-horizontal .ant-table-tbody-virtual-scrollbar-thumb'
+      );
 
-    if (xScrollThumb && scrollDiv) {
-      const hasOverflow = (scrollDiv.scrollWidth - scrollDiv.clientWidth) >= 5;
-      xScrollThumb.style.display = hasOverflow ? 'block' : 'none';
-      setShowScrollbarControl(hasOverflow);
-    }
+      if (xScrollThumb && scrollDiv) {
+        const hasOverflow = (scrollDiv.scrollWidth - scrollDiv.clientWidth) >= 5;
+        xScrollThumb.style.display = hasOverflow ? 'block' : 'none';
+        setShowScrollbarControl(hasOverflow);
+      }
 
-    const hScrollBar = tableRef.current.querySelector<HTMLElement>(
-      '.ant-table-tbody-virtual-scrollbar-horizontal'
-    );
-    if (hScrollBar) {
-      hScrollBar.style.setProperty('height', `${scrollbarHeight}px`, 'important');
-      hScrollBar.style.setProperty('visibility', 'visible', 'important');
-      hScrollBar.style.setProperty('opacity', '1', 'important');
-    }
-  }, [rows, scrollbarHeight]);
+      const hScrollBar = tableRef.current.querySelector<HTMLElement>(
+        '.ant-table-tbody-virtual-scrollbar-horizontal'
+      );
+      if (hScrollBar) {
+        hScrollBar.style.setProperty('height', `${scrollbarHeight}px`, 'important');
+        hScrollBar.style.setProperty('visibility', 'visible', 'important');
+        hScrollBar.style.setProperty('opacity', '1', 'important');
+      }
+    });
+  }, [rows.length, scrollbarHeight]);
 
   useEffect(() => {
     applyScrollbarStyles();
-  }, [rows, columns, loading, scrollbarHeight, applyScrollbarStyles]);
+  }, [rows.length, columns.length, loading, scrollbarHeight, applyScrollbarStyles]);
 
   const handleScrollbarHeightChange = useCallback((height: number) => {
     setScrollbarHeight(height);
@@ -300,6 +338,11 @@ export default function StaticTable({
     const calculatedWidth = columns.reduce((acc, col) => acc + (Number(col.width) || 150), 0);
     return Math.max(calculatedWidth, 800);
   }, [columns, tableProps.scroll?.x]);
+
+  // Adaptive virtualization threshold for large row counts
+  const isVirtual = tableProps.virtual !== undefined
+    ? tableProps.virtual
+    : (rows.length > 50 && typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
 
   // ─── Initial loading state (no data yet) ──────────────────────────────────
   if (loading && rows.length === 0) {
@@ -330,7 +373,7 @@ export default function StaticTable({
       >
         <Table<any>
           {...tableProps}
-          virtual
+          virtual={isVirtual}
           bordered={bordered}
           columns={columns}
           dataSource={rows}

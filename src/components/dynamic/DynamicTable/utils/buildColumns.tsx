@@ -94,11 +94,16 @@ export function buildColumns(
         ...filterProps,
         render: (cells: any, record: any) => {
           if (cells === undefined || cells === null) return null;
+          // Fast-path: primitive string or number avoids mounting CompositeCell & array allocations
+          if (typeof cells === "string" || typeof cells === "number") {
+            return <span style={{ fontWeight: 500, lineHeight: 1.4 }}>{cells}</span>;
+          }
           const cellArray = Array.isArray(cells)
             ? cells
             : typeof cells === "object" && cells.type
             ? [cells]
-            : [{ type: "TEXT", title: String(cells) }];
+            : null;
+          if (!cellArray) return <span>{String(cells)}</span>;
           return <CompositeCell cells={cellArray} record={record} onActionClick={onActionClick} />;
         },
       };
