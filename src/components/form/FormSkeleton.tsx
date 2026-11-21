@@ -65,3 +65,5 @@ function FormSkeleton({
 }
 
 export default memo(FormSkeleton);
+
+export { FormSkeleton };

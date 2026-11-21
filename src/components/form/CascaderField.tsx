@@ -11,7 +11,7 @@ export interface CascaderFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function CascaderField(props: CascaderFieldProps) {
+export function CascaderField(props: CascaderFieldProps) {
   const { placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   return (
@@ -47,3 +47,5 @@ export default function CascaderField(props: CascaderFieldProps) {
     />
   );
 }
+
+export default CascaderField;

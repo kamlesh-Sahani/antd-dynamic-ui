@@ -12,7 +12,7 @@ export interface ColorPickerFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function ColorPickerField(props: ColorPickerFieldProps) {
+export function ColorPickerField(props: ColorPickerFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -50,3 +50,5 @@ export default function ColorPickerField(props: ColorPickerFieldProps) {
     />
   );
 }
+
+export default ColorPickerField;

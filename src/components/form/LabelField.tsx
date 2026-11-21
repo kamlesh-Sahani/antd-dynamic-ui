@@ -65,4 +65,5 @@ const LabelField: React.FC<LabelFieldProps> = ({
   );
 };
 
+export { LabelField };
 export default LabelField;

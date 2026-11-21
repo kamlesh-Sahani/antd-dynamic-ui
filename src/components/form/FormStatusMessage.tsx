@@ -14,7 +14,7 @@ interface FormStatusMessageProps {
     onDismiss?: () => void;
 }
 
-export default function FormStatusMessage({ status, className, duration = 3500, onDismiss }: FormStatusMessageProps) {
+export function FormStatusMessage({ status, className, duration = 3500, onDismiss }: FormStatusMessageProps) {
     const [visibleStatus, setVisibleStatus] = useState<SubmitStatusType | null>(status);
 
     useEffect(() => {
@@ -43,3 +43,5 @@ export default function FormStatusMessage({ status, className, duration = 3500, 
         </div>
     );
 }
+
+export default FormStatusMessage;

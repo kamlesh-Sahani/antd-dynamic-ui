@@ -87,3 +87,5 @@ export const generateZodSchema = (fieldsOrRows: FieldConfig[] | FieldConfig[][])
 
   return z.object(shape);
 };
+
+export default generateZodSchema;

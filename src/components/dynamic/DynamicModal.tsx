@@ -171,4 +171,5 @@ DynamicModal.Header = ModalHeader;
 DynamicModal.Body = ModalBody;
 DynamicModal.Footer = ModalFooter;
 
+export { DynamicModal };
 export default DynamicModal;

@@ -12,7 +12,7 @@ export interface SwitchFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function SwitchField(props: SwitchFieldProps) {
+export function SwitchField(props: SwitchFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -51,3 +51,5 @@ export default function SwitchField(props: SwitchFieldProps) {
     />
   );
 }
+
+export default SwitchField;

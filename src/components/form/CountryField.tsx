@@ -14,7 +14,7 @@ export interface CountryPropsType extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function CountryField(props: CountryPropsType) {
+export function CountryField(props: CountryPropsType) {
   const { placeholder, disabled, onChange, showSearch = true, className, id, name, control, ...rest } = props;
 
   const countryOptions = useMemo(() => {
@@ -65,3 +65,5 @@ export default function CountryField(props: CountryPropsType) {
     />
   );
 }
+
+export default CountryField;

@@ -13,7 +13,7 @@ export interface PasswordFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function PasswordField(props: PasswordFieldProps) {
+export function PasswordField(props: PasswordFieldProps) {
   const { placeholder, disabled, options, onChange, value: _value, className, id, name, control, autoComplete, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -58,3 +58,5 @@ export default function PasswordField(props: PasswordFieldProps) {
     />
   );
 }
+
+export default PasswordField;

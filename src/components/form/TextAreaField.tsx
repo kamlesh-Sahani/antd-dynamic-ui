@@ -15,7 +15,7 @@ export interface TextAreaFieldProps extends Partial<FieldConfig> {
   [key: string]: any;
 }
 
-export default function TextAreaField(props: TextAreaFieldProps) {
+export function TextAreaField(props: TextAreaFieldProps) {
   const { placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -60,3 +60,5 @@ export default function TextAreaField(props: TextAreaFieldProps) {
     />
   );
 }
+
+export default TextAreaField;

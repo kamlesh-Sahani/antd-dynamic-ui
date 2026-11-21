@@ -12,7 +12,7 @@ export interface SliderFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function SliderField(props: SliderFieldProps) {
+export function SliderField(props: SliderFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -47,3 +47,5 @@ export default function SliderField(props: SliderFieldProps) {
     />
   );
 }
+
+export default SliderField;

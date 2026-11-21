@@ -14,7 +14,7 @@ export interface TimeRangeFieldProps extends Omit<Partial<FieldConfig>, "placeho
   format?: string;
 }
 
-export default function TimeRangeField(props: TimeRangeFieldProps) {
+export function TimeRangeField(props: TimeRangeFieldProps) {
   const { placeholder, disabled, onChange, className, id, name, control, format = "HH:mm", ...rest } = props;
 
   return (
@@ -49,3 +49,5 @@ export default function TimeRangeField(props: TimeRangeFieldProps) {
     />
   );
 }
+
+export default TimeRangeField;

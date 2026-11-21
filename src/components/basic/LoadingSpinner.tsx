@@ -26,4 +26,5 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   return spinner;
 };
 
+export { LoadingSpinner };
 export default LoadingSpinner;

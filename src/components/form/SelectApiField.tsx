@@ -22,7 +22,7 @@ export interface SelectApiFieldProps extends Omit<SelectPropsType, "options"> {
   refreshTrigger?: number;
 }
 
-export default function SelectApiField({
+export function SelectApiField({
   apiUrl,
   apiMethod,
   method = "GET",
@@ -217,3 +217,5 @@ export default function SelectApiField({
     />
   );
 }
+
+export default SelectApiField;

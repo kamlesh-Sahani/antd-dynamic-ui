@@ -18,7 +18,7 @@ export interface NumberFieldProps extends Partial<FieldConfig> {
   step?: number | string;
 }
 
-export default function NumberField(props: NumberFieldProps) {
+export function NumberField(props: NumberFieldProps) {
   const {
     placeholder,
     disabled,
@@ -90,3 +90,5 @@ export default function NumberField(props: NumberFieldProps) {
     />
   );
 }
+
+export default NumberField;

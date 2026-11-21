@@ -224,4 +224,5 @@ function SelectFieldComponent(props: SelectPropsType) {
 }
 
 const SelectField = React.memo(SelectFieldComponent);
+export { SelectField };
 export default SelectField;

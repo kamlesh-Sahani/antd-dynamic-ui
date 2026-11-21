@@ -20,7 +20,7 @@ export interface AutocompleteSelectProps extends SelectProps {
   help?: React.ReactNode;
 }
 
-export default function AutocompleteSelect({
+export function AutocompleteSelect({
   name,
   label,
   rules,
@@ -77,3 +77,5 @@ export default function AutocompleteSelect({
     </Form.Item>
   );
 }
+
+export default AutocompleteSelect;

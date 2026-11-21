@@ -12,7 +12,7 @@ export interface CheckboxFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function CheckboxField(props: CheckboxFieldProps) {
+export function CheckboxField(props: CheckboxFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const formattedOptions = options?.map((opt) => ({
@@ -56,3 +56,5 @@ export default function CheckboxField(props: CheckboxFieldProps) {
     />
   );
 }
+
+export default CheckboxField;

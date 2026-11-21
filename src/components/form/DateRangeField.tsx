@@ -12,7 +12,7 @@ export interface DateRangeFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function DateRangeField(props: DateRangeFieldProps) {
+export function DateRangeField(props: DateRangeFieldProps) {
   const { placeholder, disabled, options: _options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   return (
@@ -48,3 +48,5 @@ export default function DateRangeField(props: DateRangeFieldProps) {
     />
   );
 }
+
+export default DateRangeField;

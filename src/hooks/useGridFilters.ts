@@ -48,3 +48,5 @@ export function useGridFilters<T extends Record<string, any>>(
 
   return [filters, setFilters];
 }
+
+export default useGridFilters;

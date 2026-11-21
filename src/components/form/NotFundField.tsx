@@ -7,3 +7,4 @@ const NotFundField = (props: FieldConfig) => {
 }
 
 export default NotFundField
+export { NotFundField };

@@ -14,7 +14,232 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/index.css"
+    "./styles.css": "./dist/index.css",
+    "./dynamic-table": {
+      "types": "./dist/dynamic-table/index.d.ts",
+      "import": "./dist/dynamic-table/index.js",
+      "require": "./dist/dynamic-table/index.cjs"
+    },
+    "./dynamic-form": {
+      "types": "./dist/dynamic-form/index.d.ts",
+      "import": "./dist/dynamic-form/index.js",
+      "require": "./dist/dynamic-form/index.cjs"
+    },
+    "./dynamic-modal": {
+      "types": "./dist/dynamic-modal/index.d.ts",
+      "import": "./dist/dynamic-modal/index.js",
+      "require": "./dist/dynamic-modal/index.cjs"
+    },
+    "./dynamic-card": {
+      "types": "./dist/dynamic-card/index.d.ts",
+      "import": "./dist/dynamic-card/index.js",
+      "require": "./dist/dynamic-card/index.cjs"
+    },
+    "./dynamic-drawer": {
+      "types": "./dist/dynamic-drawer/index.d.ts",
+      "import": "./dist/dynamic-drawer/index.js",
+      "require": "./dist/dynamic-drawer/index.cjs"
+    },
+    "./dynamic-header": {
+      "types": "./dist/dynamic-header/index.d.ts",
+      "import": "./dist/dynamic-header/index.js",
+      "require": "./dist/dynamic-header/index.cjs"
+    },
+    "./dynamic-sidebar": {
+      "types": "./dist/dynamic-sidebar/index.d.ts",
+      "import": "./dist/dynamic-sidebar/index.js",
+      "require": "./dist/dynamic-sidebar/index.cjs"
+    },
+    "./input-field": {
+      "types": "./dist/input-field/index.d.ts",
+      "import": "./dist/input-field/index.js",
+      "require": "./dist/input-field/index.cjs"
+    },
+    "./form-input": {
+      "types": "./dist/input-field/index.d.ts",
+      "import": "./dist/input-field/index.js",
+      "require": "./dist/input-field/index.cjs"
+    },
+    "./select-field": {
+      "types": "./dist/select-field/index.d.ts",
+      "import": "./dist/select-field/index.js",
+      "require": "./dist/select-field/index.cjs"
+    },
+    "./form-select": {
+      "types": "./dist/select-field/index.d.ts",
+      "import": "./dist/select-field/index.js",
+      "require": "./dist/select-field/index.cjs"
+    },
+    "./select-api-field": {
+      "types": "./dist/select-api-field/index.d.ts",
+      "import": "./dist/select-api-field/index.js",
+      "require": "./dist/select-api-field/index.cjs"
+    },
+    "./autocomplete-select": {
+      "types": "./dist/autocomplete-select/index.d.ts",
+      "import": "./dist/autocomplete-select/index.js",
+      "require": "./dist/autocomplete-select/index.cjs"
+    },
+    "./date-field": {
+      "types": "./dist/date-field/index.d.ts",
+      "import": "./dist/date-field/index.js",
+      "require": "./dist/date-field/index.cjs"
+    },
+    "./date-range-field": {
+      "types": "./dist/date-range-field/index.d.ts",
+      "import": "./dist/date-range-field/index.js",
+      "require": "./dist/date-range-field/index.cjs"
+    },
+    "./time-picker-field": {
+      "types": "./dist/time-picker-field/index.d.ts",
+      "import": "./dist/time-picker-field/index.js",
+      "require": "./dist/time-picker-field/index.cjs"
+    },
+    "./time-range-field": {
+      "types": "./dist/time-range-field/index.d.ts",
+      "import": "./dist/time-range-field/index.js",
+      "require": "./dist/time-range-field/index.cjs"
+    },
+    "./switch-field": {
+      "types": "./dist/switch-field/index.d.ts",
+      "import": "./dist/switch-field/index.js",
+      "require": "./dist/switch-field/index.cjs"
+    },
+    "./checkbox-field": {
+      "types": "./dist/checkbox-field/index.d.ts",
+      "import": "./dist/checkbox-field/index.js",
+      "require": "./dist/checkbox-field/index.cjs"
+    },
+    "./radio-field": {
+      "types": "./dist/radio-field/index.d.ts",
+      "import": "./dist/radio-field/index.js",
+      "require": "./dist/radio-field/index.cjs"
+    },
+    "./password-field": {
+      "types": "./dist/password-field/index.d.ts",
+      "import": "./dist/password-field/index.js",
+      "require": "./dist/password-field/index.cjs"
+    },
+    "./text-area-field": {
+      "types": "./dist/text-area-field/index.d.ts",
+      "import": "./dist/text-area-field/index.js",
+      "require": "./dist/text-area-field/index.cjs"
+    },
+    "./number-field": {
+      "types": "./dist/number-field/index.d.ts",
+      "import": "./dist/number-field/index.js",
+      "require": "./dist/number-field/index.cjs"
+    },
+    "./slider-field": {
+      "types": "./dist/slider-field/index.d.ts",
+      "import": "./dist/slider-field/index.js",
+      "require": "./dist/slider-field/index.cjs"
+    },
+    "./rating-field": {
+      "types": "./dist/rating-field/index.d.ts",
+      "import": "./dist/rating-field/index.js",
+      "require": "./dist/rating-field/index.cjs"
+    },
+    "./color-picker-field": {
+      "types": "./dist/color-picker-field/index.d.ts",
+      "import": "./dist/color-picker-field/index.js",
+      "require": "./dist/color-picker-field/index.cjs"
+    },
+    "./cascader-field": {
+      "types": "./dist/cascader-field/index.d.ts",
+      "import": "./dist/cascader-field/index.js",
+      "require": "./dist/cascader-field/index.cjs"
+    },
+    "./country-field": {
+      "types": "./dist/country-field/index.d.ts",
+      "import": "./dist/country-field/index.js",
+      "require": "./dist/country-field/index.cjs"
+    },
+    "./phone-field": {
+      "types": "./dist/phone-field/index.d.ts",
+      "import": "./dist/phone-field/index.js",
+      "require": "./dist/phone-field/index.cjs"
+    },
+    "./otp-field": {
+      "types": "./dist/otp-field/index.d.ts",
+      "import": "./dist/otp-field/index.js",
+      "require": "./dist/otp-field/index.cjs"
+    },
+    "./upload-field": {
+      "types": "./dist/upload-field/index.d.ts",
+      "import": "./dist/upload-field/index.js",
+      "require": "./dist/upload-field/index.cjs"
+    },
+    "./button-field": {
+      "types": "./dist/button-field/index.d.ts",
+      "import": "./dist/button-field/index.js",
+      "require": "./dist/button-field/index.cjs"
+    },
+    "./loading-spinner": {
+      "types": "./dist/loading-spinner/index.d.ts",
+      "import": "./dist/loading-spinner/index.js",
+      "require": "./dist/loading-spinner/index.cjs"
+    },
+    "./error-api": {
+      "types": "./dist/error-api/index.d.ts",
+      "import": "./dist/error-api/index.js",
+      "require": "./dist/error-api/index.cjs"
+    },
+    "./context": {
+      "types": "./dist/context/index.d.ts",
+      "import": "./dist/context/index.js",
+      "require": "./dist/context/index.cjs"
+    },
+    "./hooks/use-grid-filters": {
+      "types": "./dist/hooks/use-grid-filters/index.d.ts",
+      "import": "./dist/hooks/use-grid-filters/index.js",
+      "require": "./dist/hooks/use-grid-filters/index.cjs"
+    },
+    "./hooks/use-api-options": {
+      "types": "./dist/hooks/use-api-options/index.d.ts",
+      "import": "./dist/hooks/use-api-options/index.js",
+      "require": "./dist/hooks/use-api-options/index.cjs"
+    },
+    "./hooks/use-fetch": {
+      "types": "./dist/hooks/use-fetch/index.d.ts",
+      "import": "./dist/hooks/use-fetch/index.js",
+      "require": "./dist/hooks/use-fetch/index.cjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.cjs"
+    },
+    "./utils/generate-zod-schema": {
+      "types": "./dist/utils/generate-zod-schema/index.d.ts",
+      "import": "./dist/utils/generate-zod-schema/index.js",
+      "require": "./dist/utils/generate-zod-schema/index.cjs"
+    },
+    "./utils/get-initial-values": {
+      "types": "./dist/utils/get-initial-values/index.d.ts",
+      "import": "./dist/utils/get-initial-values/index.js",
+      "require": "./dist/utils/get-initial-values/index.cjs"
+    },
+    "./utils/api": {
+      "types": "./dist/utils/api/index.d.ts",
+      "import": "./dist/utils/api/index.js",
+      "require": "./dist/utils/api/index.cjs"
+    },
+    "./utils/main": {
+      "types": "./dist/utils/main/index.d.ts",
+      "import": "./dist/utils/main/index.js",
+      "require": "./dist/utils/main/index.cjs"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs"
+    }
   },
   "files": [
     "dist"

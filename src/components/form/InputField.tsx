@@ -21,7 +21,7 @@ export interface InputFieldProps extends Omit<Partial<FieldConfig>, 'type'> {
   autoComplete?: string;
 }
 
-export default function InputField(props: InputFieldProps) {
+export function InputField(props: InputFieldProps) {
   const {
     placeholder,
     disabled,
@@ -109,3 +109,5 @@ export default function InputField(props: InputFieldProps) {
     />
   );
 }
+
+export default InputField;

@@ -12,7 +12,7 @@ export interface RatingFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function RatingField(props: RatingFieldProps) {
+export function RatingField(props: RatingFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
@@ -49,3 +49,5 @@ export default function RatingField(props: RatingFieldProps) {
     />
   );
 }
+
+export default RatingField;

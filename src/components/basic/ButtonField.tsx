@@ -6,7 +6,7 @@ export interface ButtonProps extends AntButtonProps {
     fullWidth?: boolean;
 }
 
-export default function ButtonField({ fullWidth: _fullWidth, className, children, ...props }: ButtonProps) {
+export function ButtonField({ fullWidth: _fullWidth, className, children, ...props }: ButtonProps) {
     return (
         <AntButton
             className={classNames("flex items-center justify-center font-semibold", className)}
@@ -16,3 +16,4 @@ export default function ButtonField({ fullWidth: _fullWidth, className, children
         </AntButton>
     );
 }
+export default ButtonField;

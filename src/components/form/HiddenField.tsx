@@ -10,7 +10,7 @@ export interface HiddenFieldProps extends Partial<FieldConfig> {
   control: Control<FieldValues, any, FieldValues>;
 }
 
-export default function HiddenField(props: HiddenFieldProps) {
+export function HiddenField(props: HiddenFieldProps) {
   const { placeholder: _placeholder, disabled: _disabled, options: _options, onChange, value: _value, className: _className, id, name, control } = props;
 
   return (
@@ -36,3 +36,5 @@ export default function HiddenField(props: HiddenFieldProps) {
     />
   );
 }
+
+export default HiddenField;

@@ -8,7 +8,7 @@ interface RichTextEditorProps {
   [key: string]: any;
 }
 
-export default function RichTextEditor({ value, onChange, placeholder, ...rest }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, placeholder, ...rest }: RichTextEditorProps) {
   return (
     <Input.TextArea
       value={value}
@@ -19,3 +19,5 @@ export default function RichTextEditor({ value, onChange, placeholder, ...rest }
     />
   );
 }
+
+export default RichTextEditor;

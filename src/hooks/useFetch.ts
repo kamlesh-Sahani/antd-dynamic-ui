@@ -102,3 +102,5 @@ export const useFetch = <R = unknown, T = unknown>({
 
   return {data, loading, error, refetch: fetchData};
 };
+
+export default useFetch;

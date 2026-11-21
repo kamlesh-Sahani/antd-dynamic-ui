@@ -157,4 +157,5 @@ const PhoneField = (props: PhoneFieldProps) => {
   );
 };
 
+export { PhoneField };
 export default PhoneField;

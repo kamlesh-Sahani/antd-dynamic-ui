@@ -17,7 +17,7 @@ export interface TimePickerFieldProps extends Partial<FieldConfig> {
   format?: string;
 }
 
-export default function TimePickerField(props: TimePickerFieldProps) {
+export function TimePickerField(props: TimePickerFieldProps) {
   const { placeholder, disabled, onChange, value: _value, className, id, name, control, format = "HH:mm", ...rest } = props;
 
   return (
@@ -62,3 +62,5 @@ export default function TimePickerField(props: TimePickerFieldProps) {
     />
   );
 }
+
+export default TimePickerField;

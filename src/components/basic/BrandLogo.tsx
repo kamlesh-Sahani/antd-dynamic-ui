@@ -39,7 +39,7 @@ export const BrandIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({
 
 export const Logo = BrandIcon;
 
-export default function BrandLogo({
+export function BrandLogo({
   className,
   size = "md",
   collapsed = false,
@@ -79,3 +79,5 @@ export default function BrandLogo({
     </div>
   );
 }
+
+export default BrandLogo;

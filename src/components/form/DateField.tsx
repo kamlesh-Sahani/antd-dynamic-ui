@@ -16,7 +16,7 @@ export interface DateFieldProps extends Partial<FieldConfig> {
   [key: string]: any;
 }
 
-export default function DateField(props: DateFieldProps) {
+export function DateField(props: DateFieldProps) {
   const { placeholder, disabled, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   return (
@@ -56,3 +56,5 @@ export default function DateField(props: DateFieldProps) {
     />
   );
 }
+
+export default DateField;

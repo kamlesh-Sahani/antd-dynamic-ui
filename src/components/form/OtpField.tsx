@@ -14,7 +14,7 @@ export interface OtpFieldProps {
   size?: "small" | "middle" | "large";
 }
 
-export default function OtpField(props: OtpFieldProps) {
+export function OtpField(props: OtpFieldProps) {
   const { disabled, onChange, className, id, name, control, length = 6, size = "large", ...rest } = props;
 
   return (
@@ -53,3 +53,5 @@ export default function OtpField(props: OtpFieldProps) {
     />
   );
 }
+
+export default OtpField;

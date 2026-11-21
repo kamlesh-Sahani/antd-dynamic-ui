@@ -14,7 +14,7 @@ export interface RadioFieldProps extends Partial<FieldConfig> {
   buttonStyle?: 'outline' | 'solid';
 }
 
-export default function RadioField(props: RadioFieldProps) {
+export function RadioField(props: RadioFieldProps) {
   const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   const formattedOptions = options?.map((opt) => ({
@@ -57,3 +57,5 @@ export default function RadioField(props: RadioFieldProps) {
     />
   );
 }
+
+export default RadioField;
