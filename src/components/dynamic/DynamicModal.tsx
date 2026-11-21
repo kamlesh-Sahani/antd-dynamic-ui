@@ -99,6 +99,7 @@ export interface DynamicModalProps extends ReactModal.Props {
   title?: React.ReactNode;
   headerAction?: React.ReactNode;
   footer?: React.ReactNode;
+  children?: React.ReactNode;
   onClose?: () => void;
   close?: "icon" | "text";
   hideCloseButton?: boolean;
