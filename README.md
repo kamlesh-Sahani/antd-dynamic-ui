@@ -1,10 +1,14 @@
 # antd-dynamic-ui
 
 [![npm version](https://img.shields.io/npm/v/antd-dynamic-ui.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/antd-dynamic-ui)
+[![Documentation](https://img.shields.io/badge/Documentation-Live%20Docs-e05d44?style=flat-square&logo=vercel)](https://antd-dynamic-ui.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict%205.x-blue?style=flat-square)](#)
 [![Tree Shaking](https://img.shields.io/badge/Tree--Shaking-Verified%20(2.8%20KB)-purple?style=flat-square)](#-tree-shaking-benchmarks)
+
+> 🚀 **Interactive Documentation & Live Playground**: [https://antd-dynamic-ui.vercel.app](https://antd-dynamic-ui.vercel.app)  
+> Explore live sandboxes, TypeScript props, and JSON schemas for all 31 components, 5 hooks, and 15+ utilities.
 
 A high-productivity, modular, schema-driven UI toolkit for **React** and **Ant Design**. Build robust enterprise dashboards, dynamic data tables, and schema-generated forms with automatic Zod validation, conditional logic, and first-class tree-shaking.
 

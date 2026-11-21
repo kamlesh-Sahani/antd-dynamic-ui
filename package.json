@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/kamlesh-Sahani/antd-dynamic-ui/issues"
   },
-  "homepage": "https://github.com/kamlesh-Sahani/antd-dynamic-ui#readme",
+  "homepage": "https://antd-dynamic-ui.vercel.app",
   "publishConfig": {
     "access": "public"
   },
