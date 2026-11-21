@@ -1,0 +1,9 @@
+export { default as AuditIcon } from "./AuditIcon";
+export { default as CsvIcon } from "./CsvIcon";
+export { default as ExcelIcon } from "./ExcelIcon";
+export { default as ExchangeIcon } from "./ExchangeIcon";
+export { default as InfoIcon } from "./InfoIcon";
+export { default as ProfileIcon } from "./ProfileIcon";
+export { default as RazorpayIcon } from "./RazorpayIcon";
+export { default as WarningIcon } from "./WarningIcon";
+export { default as DeleteIcon } from "./deleteIcon";
