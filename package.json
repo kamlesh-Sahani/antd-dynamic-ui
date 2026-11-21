@@ -1,6 +1,6 @@
 {
   "name": "antd-dynamic-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A high-productivity UI toolkit for React and Ant Design featuring schema-driven DynamicForm, DynamicTable, and 25+ standardized form fields.",
   "author": "Kamlesh Sahani",
   "license": "MIT",
