@@ -8,6 +8,7 @@ import {
   isString,
   generateLocaleKey,
   responseError,
+  isSafeUrl,
 } from "../dist/index.js";
 
 describe("generateZodSchema & getInitialValues from dist", () => {
@@ -98,5 +99,15 @@ describe("main.utils from dist", () => {
     assert.equal(responseError({ response: { data: { message: "Server error" } } }), "Server error");
     assert.equal(responseError({ message: "Network error" }), "Network error");
     assert.equal(responseError({}), "Something went wrong");
+  });
+
+  test("isSafeUrl protocol protection", () => {
+    assert.equal(isSafeUrl("https://example.com/api"), true);
+    assert.equal(isSafeUrl("/dashboard/users"), true);
+    assert.equal(isSafeUrl("javascript:alert(1)"), false);
+    assert.equal(isSafeUrl("data:text/html,<script>alert(1)</script>"), false);
+    assert.equal(isSafeUrl("vbscript:msgbox(1)"), false);
+    assert.equal(isSafeUrl(""), false);
+    assert.equal(isSafeUrl(undefined), false);
   });
 });

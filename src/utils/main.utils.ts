@@ -68,4 +68,22 @@ export const generateLocaleKey = (text: string): string => {
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '_')
         .replace(/-+/g, '_');
+};
+
+/**
+ * Validates that a URL does not execute arbitrary code via dangerous protocols
+ * (e.g. javascript:, vbscript:, data:text/html)
+ */
+export const isSafeUrl = (url?: string): boolean => {
+    if (!url || !isString(url)) return false;
+    const trimmed = url.trim().toLowerCase();
+    // Block dangerous protocols
+    if (
+        trimmed.startsWith("javascript:") ||
+        trimmed.startsWith("vbscript:") ||
+        trimmed.startsWith("data:")
+    ) {
+        return false;
+    }
+    return true;
 }; 

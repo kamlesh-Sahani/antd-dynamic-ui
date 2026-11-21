@@ -252,6 +252,7 @@
     "dev": "tsup --config tsup.config.cjs --watch",
     "typecheck": "tsc --noEmit",
     "test": "node --test test/*.test.ts",
+    "prepublishOnly": "npm run test && npm run typecheck && npm run build",
     "clean": "rm -rf dist"
   },
   "keywords": [

@@ -3,7 +3,7 @@
 import React, { memo } from "react";
 import { Tooltip } from "antd";
 import type { LinkCellType } from "../types";
-import { isNotEmptyObject } from '../../../../utils/main.utils';
+import { isNotEmptyObject, isSafeUrl } from '../../../../utils/main.utils';
 import { useDynamicUI } from "../../../../context/DynamicUIContext";
 
 export interface LinkCellProps extends LinkCellType {
@@ -78,6 +78,11 @@ function LinkCell({
     const finalUrl = queryString
       ? (url.includes("?") ? `${url}&${queryString}` : `${url}?${queryString}`)
       : url;
+
+    if (!isSafeUrl(finalUrl)) {
+      console.warn("Blocked potentially unsafe URL navigation:", finalUrl);
+      return;
+    }
 
     if (target === "_blank") {
       if (typeof window !== "undefined") {
