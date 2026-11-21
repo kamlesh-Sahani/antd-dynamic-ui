@@ -38,9 +38,10 @@ A high-productivity, modular, schema-driven UI toolkit for **React** and **Ant D
   - [String, Formatting & Color Utilities](#5-string-formatting--color-utilities)
   - [Theme & Provider Utilities](#6-theme--provider-utilities)
   - [Utility Code Examples](#7-utility-code-examples)
-- [Next.js Integration Guide](#-nextjs-integration-guide)
-  - [App Router (Next.js 14 / 15 / 16)](#app-router-nextjs-14--15--16)
-  - [Pages Router](#pages-router)
+- [Framework Integration Guide](#-framework-integration-guide)
+  - [Standard React SPA (Vite / CRA / React Router)](#standard-react-spa-vite--cra--react-router)
+  - [Next.js App Router (Next.js 14 / 15 / 16)](#app-router-nextjs-14--15--16)
+  - [Next.js Pages Router](#pages-router)
 - [Theming & Customization](#-theming--customization)
 - [Security Architecture](#-security-architecture)
 - [Troubleshooting & FAQs](#-troubleshooting--faqs)
@@ -880,7 +881,86 @@ try {
 
 ---
 
-## ⚡ Next.js Integration Guide
+## ⚡ Framework Integration Guide
+
+`antd-dynamic-ui` is built on standard React primitives and has **zero hard dependencies on Next.js**. It runs natively in:
+- ⚛️ **Standard React SPAs** (Vite, Create React App, Webpack) with **React Router** or **TanStack Router**
+- ▲ **Next.js App Router** (Next.js 14, 15, and 16 with `@ant-design/nextjs-registry`)
+- 📄 **Next.js Pages Router**
+- 💿 **Remix** and **Astro** (React islands)
+
+---
+
+### Standard React SPA (Vite / CRA / React Router)
+
+In a standard React application, initialize `antd-dynamic-ui` in your `main.tsx` or `App.tsx`:
+
+#### 1. Setup in `App.tsx`
+
+```tsx
+import React from "react";
+import { BrowserRouter, useNavigate, Routes, Route } from "react-router-dom";
+import { AntdProvider } from "antd-dynamic-ui/utils";
+import { DynamicUIProvider } from "antd-dynamic-ui/context";
+import "antd-dynamic-ui/styles.css";
+
+// Page Components
+import UsersListPage from "./pages/UsersListPage";
+import UserFormPage from "./pages/UserFormPage";
+
+function AppContent() {
+  const navigate = useNavigate();
+
+  return (
+    <AntdProvider primaryColor="#1677ff">
+      {/* Route table link clicks and action redirects through React Router */}
+      <DynamicUIProvider onNavigate={(url) => navigate(url)}>
+        <Routes>
+          <Route path="/" element={<UsersListPage />} />
+          <Route path="/users/new" element={<UserFormPage />} />
+        </Routes>
+      </DynamicUIProvider>
+    </AntdProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+```
+
+#### 2. Using Components in Any View
+
+```tsx
+import React from "react";
+import { DynamicForm } from "antd-dynamic-ui/dynamic-form";
+import type { FieldConfig } from "antd-dynamic-ui/types";
+
+const formFields: FieldConfig[][] = [
+  [
+    { id: "fullName", label: "Full Name", type: "input", required: true },
+    { id: "email", label: "Email Address", type: "email", required: true },
+  ],
+];
+
+export default function UserFormPage() {
+  return (
+    <div style={{ padding: 24 }}>
+      <h1>Create New User</h1>
+      <DynamicForm
+        fields={formFields}
+        onSubmit={(data) => console.log("Submitted:", data)}
+      />
+    </div>
+  );
+}
+```
+
+---
 
 ### App Router (Next.js 14 / 15 / 16)
 
