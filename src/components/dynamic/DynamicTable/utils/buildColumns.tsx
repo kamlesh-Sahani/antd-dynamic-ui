@@ -1,6 +1,6 @@
 import type { TableColumnType as AntColumnType } from "antd";
 import type { TableColumnType, TableCellType } from "../types";
-import { isNotEmpty, isNotEmptyArray } from '../../../../utils/main.utils';
+import { isNotEmpty, isNotEmptyArray, isArray, isString, isNumber, isObject, isNull, isUndefined } from '../../../../utils/main.utils';
 import CompositeCell from "../renderers/CompositeCell";
 import FilterControl from "../../FilterControl";
 
@@ -93,14 +93,14 @@ export function buildColumns(
         sorter: col.sortable,
         ...filterProps,
         render: (cells: any, record: any) => {
-          if (cells === undefined || cells === null) return null;
+          if (isUndefined(cells) || isNull(cells)) return null;
           // Fast-path: primitive string or number avoids mounting CompositeCell & array allocations
-          if (typeof cells === "string" || typeof cells === "number") {
+          if (isString(cells) || isNumber(cells)) {
             return <span style={{ fontWeight: 500, lineHeight: 1.4 }}>{cells}</span>;
           }
-          const cellArray = Array.isArray(cells)
+          const cellArray = isArray(cells)
             ? cells
-            : typeof cells === "object" && cells.type
+            : isObject(cells) && cells.type
             ? [cells]
             : null;
           if (!cellArray) return <span>{String(cells)}</span>;

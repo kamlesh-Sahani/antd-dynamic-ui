@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { generateZodSchema } from "../../utils/generateZodSchema";
 import ButtonField from "../basic/ButtonField";
 import { FieldConfig } from "../../types/formField.types";
+import { isArray } from "../../utils/main.utils";
 
 export interface FormSchema {
   rows: FieldConfig[][];
@@ -69,8 +70,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     if (propSchema) return propSchema;
     const apiSchema = (data as any)?.data || (data as any);
     if (apiSchema?.rows) return apiSchema;
-    if (Array.isArray(apiSchema)) {
-      return { rows: Array.isArray(apiSchema[0]) ? apiSchema : [apiSchema] };
+    if (isArray(apiSchema)) {
+      return { rows: isArray(apiSchema[0]) ? apiSchema : [apiSchema] };
     }
     return { rows: [] };
   }, [propSchema, data]);

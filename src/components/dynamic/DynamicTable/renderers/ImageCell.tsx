@@ -4,6 +4,7 @@ import { memo, useState, lazy } from "react";
 import Image from "../../../basic/Image";
 import type { ImageCellType } from "../types";
 import { IMAGE_DEFAULT_SIZE } from "../utils/constants";
+import { isNumber } from "../../../../utils/main.utils";
 import { FaFileAlt, FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint, FaFileCode } from "react-icons/fa";
 
 const DynamicFilePreviewer = lazy(() => import("../../DynamicFilePreviewer"));
@@ -55,8 +56,8 @@ function ImageCell({ src, alt, isPreview, width, height, shape = "circle" }: Ima
         <Image
           src={src}
           alt={alt ?? "file"}
-          width={typeof size === "number" ? size : 40}
-          height={typeof h === "number" ? h : 40}
+          width={isNumber(size) ? size : 40}
+          height={isNumber(h) ? h : 40}
           unoptimized
           role={isPreview ? "button" : undefined}
           tabIndex={isPreview ? 0 : undefined}

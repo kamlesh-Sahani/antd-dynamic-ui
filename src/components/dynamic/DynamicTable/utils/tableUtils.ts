@@ -1,4 +1,4 @@
-import { isNotEmpty, isNotEmptyArray } from '../../../../utils/main.utils';
+import { isNotEmpty, isNotEmptyArray, isArray } from '../../../../utils/main.utils';
 import type { TablePayloadType, DynamicTableProps } from "../types";
 
 /**
@@ -65,7 +65,7 @@ export function parseAntdFilters(
           newColumnFilters[key] = {
             operator: parsed.operator || defaultOperator,
             // Ensure value is always sent as an array
-            value: Array.isArray(parsed.value) ? parsed.value : [parsed.value],
+            value: isArray(parsed.value) ? parsed.value : [parsed.value],
           };
           hasChanges = true;
         } else if (newColumnFilters[key]) {

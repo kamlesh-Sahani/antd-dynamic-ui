@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Input, Select, Radio, DatePicker, InputNumber, ConfigProvider } from "antd";
 import type { TableColumnType } from "./DynamicTable/types";
 import dayjs from "dayjs";
-import { isArray, isNotEmpty, isNotEmptyArray } from '../../utils/main.utils';
+import { isArray, isNotEmpty, isNotEmptyArray, isString } from '../../utils/main.utils';
 import { useApiOptions } from '../../hooks/useApiOptions';
 
 export interface FilterValue {
@@ -258,7 +258,7 @@ export default function FilterControl({
         }
 
         const rawDate = isArray(current.value) ? current.value[0] : current.value;
-        const dateVal = rawDate && typeof rawDate === "string" ? dayjs(rawDate) : null;
+        const dateVal = rawDate && isString(rawDate) ? dayjs(rawDate) : null;
 
         return (
           <DatePicker

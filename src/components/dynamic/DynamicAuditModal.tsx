@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import DynamicModal from "./DynamicModal";
 import DynamicTable from "./DynamicTable/DynamicTable";
 import { useDynamicUI } from "../../context/DynamicUIContext";
+import { isUndefined } from "../../utils/main.utils";
 
 export interface AuditChangesDetail {
     actionKey?: string;
@@ -77,7 +78,7 @@ export default function DynamicAuditModal({
             callback(resolvedData);
         }
 
-        if (controlledAuditChanges === undefined) {
+        if (isUndefined(controlledAuditChanges)) {
             setInternalAuditChanges(resolvedData);
         }
     };

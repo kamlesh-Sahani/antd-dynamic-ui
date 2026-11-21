@@ -17,7 +17,7 @@ import { getFileIcon, getFileColorClass, getPreviewStrategy } from "./fileTypes"
 import classNames from "classnames";
 import { uploadApi } from '../../../utils/api';
 import { uploadFileToS3 } from "./uploadService";
-import { isNotEmptyArray } from '../../../utils/main.utils';
+import { isNotEmptyArray, isArray, isString } from '../../../utils/main.utils';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -155,10 +155,10 @@ export default function UploadField(props: UploadFieldProps) {
       name={id}
       control={control}
       render={({ field, fieldState }) => {
-        const isUrlMode = valueType === "url" || (maxCount === 1 && typeof field.value === "string");
+        const isUrlMode = valueType === "url" || (maxCount === 1 && isString(field.value));
         const fileList: UploadFile[] = useMemo(() => {
-          if (Array.isArray(field.value)) return field.value;
-          if (typeof field.value === "string" && field.value) {
+          if (isArray(field.value)) return field.value;
+          if (isString(field.value) && field.value) {
             return [{ uid: "-1", name: "image", status: "done", url: field.value }];
           }
           return [];

@@ -10,7 +10,7 @@ import { ErrorApi } from '../../ui/ErrorApi';
 import { TABLE_THEME, PAGE_SIZE_OPTIONS, INITIAL_TABLE_PAYLOAD } from "./utils/constants";
 import type { StaticTableProps, TableCellType, TablePayloadType } from "./types";
 import classNames from "classnames";
-import { isArray, isNotEmptyArray, isNotEmpty } from '../../../utils/main.utils';
+import { isArray, isNotEmptyArray, isNotEmpty, isString, isNumber, isObject, isUndefined } from '../../../utils/main.utils';
 import { useGridFilters } from '../../../hooks/useGridFilters';
 
 export default function StaticTable({
@@ -105,7 +105,7 @@ export default function StaticTable({
         for (const key in row) {
           if (key === "_rowKey") continue;
           const cells = row[key];
-          if (Array.isArray(cells)) {
+          if (isArray(cells)) {
             for (let i = 0; i < cells.length; i++) {
               const cell = cells[i];
               if (cell && (cell.type === "TEXT" || cell.type === "LINK" || cell.type === "STATUS")) {
@@ -114,11 +114,11 @@ export default function StaticTable({
                 }
               }
             }
-          } else if (typeof cells === "object" && cells !== null && (cells as any).title) {
+          } else if (isObject(cells) && (cells as any).title) {
             if (String((cells as any).title).toLowerCase().includes(searchTerm)) {
               return true;
             }
-          } else if (typeof cells === "string" || typeof cells === "number") {
+          } else if (isString(cells) || isNumber(cells)) {
             if (String(cells).toLowerCase().includes(searchTerm)) {
               return true;
             }
@@ -136,8 +136,8 @@ export default function StaticTable({
         const cellA = a[sortKey]?.[0];
         const cellB = b[sortKey]?.[0];
 
-        const valA = ((cellA as any)?.title || (typeof a[sortKey] === "string" ? a[sortKey] : "")) || "";
-        const valB = ((cellB as any)?.title || (typeof b[sortKey] === "string" ? b[sortKey] : "")) || "";
+        const valA = ((cellA as any)?.title || (isString(a[sortKey]) ? a[sortKey] : "")) || "";
+        const valB = ((cellB as any)?.title || (isString(b[sortKey]) ? b[sortKey] : "")) || "";
 
         return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
       });
@@ -332,7 +332,7 @@ export default function StaticTable({
   }, []);
 
   const xScroll = useMemo(() => {
-    if (typeof tableProps.scroll?.x === "number") {
+    if (isNumber(tableProps.scroll?.x)) {
       return tableProps.scroll.x;
     }
     const calculatedWidth = columns.reduce((acc, col) => acc + (Number(col.width) || 150), 0);
@@ -383,7 +383,7 @@ export default function StaticTable({
           scroll={{
             y: scrollY,
             ...tableProps.scroll,
-            x: typeof tableProps.scroll?.x === "number" ? tableProps.scroll.x : xScroll,
+            x: isNumber(tableProps.scroll?.x) ? tableProps.scroll.x : xScroll,
           }}
           size="small"
           pagination={

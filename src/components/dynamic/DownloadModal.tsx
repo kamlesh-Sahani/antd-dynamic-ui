@@ -11,7 +11,7 @@ import InputField from "../form/InputField";
 import FormStatusMessage, { SubmitStatusType } from "../form/FormStatusMessage";
 import api from '../../utils/api';
 import { useFetch } from '../../hooks/useFetch';
-import { isArray, isString, isNotEmptyArray, responseError } from '../../utils/main.utils';
+import { isArray, isString, isNotEmptyArray, isNotEmpty, responseError } from '../../utils/main.utils';
 import LoadingSpinner from '../basic/LoadingSpinner';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, format, fi
         const isActive = filters?.isFilterActive !== false;
         if (isActive && filters?.columnFilters) {
             for (const [key, f] of Object.entries<any>(filters.columnFilters)) {
-                if (f?.value === undefined || f?.value === "") continue;
+                if (!isNotEmpty(f?.value)) continue;
 
                 const { operator, value } = parseRawFilter(f);
                 const colConfig = filters.columns?.find(
