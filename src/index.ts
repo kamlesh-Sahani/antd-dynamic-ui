@@ -1,3 +1,7 @@
+// Core Styles
+import "./styles/index.css";
+import "./components/form/RichTextEditor.css";
+
 // Core Context & Provider
 export * from "./context";
 

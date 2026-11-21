@@ -23,9 +23,10 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "dev": "tsup src/index.ts --format cjs,esm --watch --dts",
+    "build": "tsup --config tsup.config.cjs",
+    "dev": "tsup --config tsup.config.cjs --watch",
     "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.ts",
     "clean": "rm -rf dist"
   },
   "keywords": [

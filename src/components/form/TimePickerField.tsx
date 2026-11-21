@@ -4,7 +4,7 @@ import { FieldConfig } from '../../types/formField.types';
 import classNames from "classnames";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
 
 dayjs.extend(customParseFormat);
 

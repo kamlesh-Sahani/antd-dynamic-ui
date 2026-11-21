@@ -21,4 +21,5 @@ function getInitialValues(fields: FieldConfig[] | FieldConfig[][]) {
   return data;
 }
 
+export { getInitialValues };
 export default getInitialValues;
