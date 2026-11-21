@@ -4,18 +4,17 @@ import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface HiddenFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
 }
 
 export function HiddenField(props: HiddenFieldProps) {
-  const { placeholder: _placeholder, disabled: _disabled, options: _options, onChange, value: _value, className: _className, id, name, control } = props;
+  const { placeholder: _placeholder, disabled: _disabled, options: _options, onChange, value: _value, className: _className, id, control } = props;
 
   return (
     <Controller
-      name={(name || "") + id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const _handleChange = (val: any) => {

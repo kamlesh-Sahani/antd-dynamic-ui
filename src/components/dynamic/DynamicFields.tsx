@@ -67,7 +67,6 @@ export interface DynamicFieldsProps {
   methods: any;
   useWindowScroll?: boolean;
   style?: React.CSSProperties;
-  namePrefix?: string;
 }
 const textTypes = new Set(['heading', 'paragraph', 'textField']);
 
@@ -101,14 +100,14 @@ const evaluateConditions = (
 };
 
 
-const DynamicFields: React.FC<DynamicFieldsProps> = ({ rows, methods, style, namePrefix = "" }) => {
+const DynamicFields: React.FC<DynamicFieldsProps> = ({ rows, methods, style }) => {
   if (!isNotEmptyArray(rows)) return null;
 
   return (
     <Suspense fallback={<div className="flex justify-center py-6"><LoadingSpinner /></div>}>
       <Row gutter={[24, 0]} style={style}>
         {rows.map((field: FieldConfig) => (
-          <SingleField key={field.id} config={field} control={methods?.control} namePrefix={namePrefix} />
+          <SingleField key={field.id} config={field} control={methods?.control} />
         ))}
       </Row>
     </Suspense>
@@ -120,18 +119,16 @@ export default memo(DynamicFields);
 const SingleField = memo(function SingleField({
   config,
   control,
-  namePrefix = "",
 }: {
   config: FieldConfig;
   control: any;
-  namePrefix?: string;
 }) {
   const dependentFields = useMemo(
     () =>
       isNotEmptyArray(config?.conditions)
-        ? config?.conditions?.map((c) => (namePrefix ? `${namePrefix}.${c.field}` : c.field))
+        ? config?.conditions?.map((c) => c.field)
         : [],
-    [config?.conditions, namePrefix],
+    [config?.conditions],
   );
 
   const watchedValues = useWatch({
@@ -153,8 +150,6 @@ const SingleField = memo(function SingleField({
 
   const Field = fields[config?.type] || NotFundField;
   const label = config?.label;
-  const prefix = namePrefix ? `${namePrefix}.` : "";
-  const formFieldName = config?.name || (prefix ? `${prefix}${config?.id}` : config?.id);
   return (
     <Col span={config?.span || 24} offset={config?.offset || 0} className="mb-4">
       {
@@ -176,7 +171,7 @@ const SingleField = memo(function SingleField({
           </label>
         )
       }
-      <Field {...config} name={formFieldName} control={control} />
+      <Field {...config} control={control} />
     </Col>
   );
 });

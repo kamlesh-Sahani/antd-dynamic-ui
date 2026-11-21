@@ -10,7 +10,8 @@ import api from '../../utils/api';
 import { isArray } from '../../utils/main.utils';
 
 export interface AutocompleteSelectProps extends SelectProps {
-  name: string | (string | number)[];
+  id?: string;
+  name?: string | (string | number)[];
   label?: React.ReactNode;
   rules?: Rule[];
   apiUrl: string; // The endpoint to fetch data from
@@ -21,6 +22,7 @@ export interface AutocompleteSelectProps extends SelectProps {
 }
 
 export function AutocompleteSelect({
+  id,
   name,
   label,
   rules,
@@ -61,7 +63,7 @@ export function AutocompleteSelect({
   }, [apiUrl]);
 
   return (
-    <Form.Item name={name} label={label} rules={rules} help={help} className="mb-0">
+    <Form.Item name={id || name} label={label} rules={rules} help={help} className="mb-0">
       <Select
         size="large"
         showSearch

@@ -6,7 +6,6 @@ import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface RadioFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
@@ -15,7 +14,7 @@ export interface RadioFieldProps extends Partial<FieldConfig> {
 }
 
 export function RadioField(props: RadioFieldProps) {
-  const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
+  const { placeholder: _placeholder, disabled, options, onChange, value: _value, className, id, control, ...rest } = props;
 
   const formattedOptions = options?.map((opt) => ({
     label: (opt as any).label || (opt as any).key || opt.value,
@@ -24,7 +23,7 @@ export function RadioField(props: RadioFieldProps) {
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {

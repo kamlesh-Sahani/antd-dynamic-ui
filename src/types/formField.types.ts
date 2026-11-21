@@ -90,7 +90,6 @@ export interface UploadConfig {
 
 export interface FieldConfig {
   id: string;
-  name?: string;
   tooltip?: string;
   type: FieldType;
   label?: string;

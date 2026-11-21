@@ -6,7 +6,6 @@ import { isArray } from '../../utils';
 
 export interface TimeRangeFieldProps extends Omit<Partial<FieldConfig>, "placeholder"> {
   id: string;
-  name?: string;
   placeholder?: string | [string, string];
   onChange?: (val: any) => void;
   className?: string;
@@ -15,11 +14,11 @@ export interface TimeRangeFieldProps extends Omit<Partial<FieldConfig>, "placeho
 }
 
 export function TimeRangeField(props: TimeRangeFieldProps) {
-  const { placeholder, disabled, onChange, className, id, name, control, format = "HH:mm", ...rest } = props;
+  const { placeholder, disabled, onChange, className, id, control, format = "HH:mm", ...rest } = props;
 
   return (
     <Controller
-      name={(name || "") + id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {

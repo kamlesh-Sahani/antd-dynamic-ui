@@ -5,18 +5,17 @@ import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface CascaderFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
 }
 
 export function CascaderField(props: CascaderFieldProps) {
-  const { placeholder, disabled, options, onChange, value: _value, className, id, name, control, ...rest } = props;
+  const { placeholder, disabled, options, onChange, value: _value, className, id, control, ...rest } = props;
 
   return (
     <Controller
-      name={(name || "") + id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {

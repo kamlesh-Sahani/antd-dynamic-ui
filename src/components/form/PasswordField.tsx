@@ -7,7 +7,6 @@ import { useSafeControl } from "../../hooks/useSafeControl";
 
 export interface PasswordFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   autoComplete?: string;
   onChange?: (val: any) => void;
   className?: string;
@@ -15,7 +14,7 @@ export interface PasswordFieldProps extends Partial<FieldConfig> {
 }
 
 export function PasswordField(props: PasswordFieldProps) {
-  const { placeholder, disabled, options, onChange, value: _value, className, id, name, control, autoComplete, ...rest } = props;
+  const { placeholder, disabled, options, onChange, value: _value, className, id, control, autoComplete, ...rest } = props;
 
   const _formattedOptions = options?.map((opt) => ({
     label: (opt as any).label || (opt as any).key || opt.value,
@@ -41,7 +40,7 @@ export function PasswordField(props: PasswordFieldProps) {
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={activeControl}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {

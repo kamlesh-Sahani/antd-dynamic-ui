@@ -49,13 +49,12 @@ ChartJS.register(
 
 export interface DynamicChartFieldProps extends FieldConfig {
   id: string;
-  name?: string;
   className?: string;
   control?: Control<FieldValues, any, FieldValues>;
 }
 
 export default function DynamicChartField(props: DynamicChartFieldProps) {
-  const { className, id, name, control, chartConfig, options: fieldOptions } = props;
+  const { className, id, control, chartConfig, options: fieldOptions } = props;
 
   // Chart data comes purely from props (no API fetching inside the component)
   // If chartConfig.data is provided, use it. Otherwise, fallback to the generic `options` array if provided.
@@ -164,10 +163,10 @@ export default function DynamicChartField(props: DynamicChartFieldProps) {
   );
 
   // Hook form integration wrapper
-  if (control && name) {
+  if (control) {
     return (
       <Controller
-        name={(name || "") + id}
+        name={id}
         control={control}
         render={() => (
           <Form.Item className="mb-0 w-full">

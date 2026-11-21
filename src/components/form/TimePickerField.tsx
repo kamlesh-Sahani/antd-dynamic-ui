@@ -10,7 +10,6 @@ dayjs.extend(customParseFormat);
 
 export interface TimePickerFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
@@ -18,11 +17,11 @@ export interface TimePickerFieldProps extends Partial<FieldConfig> {
 }
 
 export function TimePickerField(props: TimePickerFieldProps) {
-  const { placeholder, disabled, onChange, value: _value, className, id, name, control, format = "HH:mm", ...rest } = props;
+  const { placeholder, disabled, onChange, value: _value, className, id, control, format = "HH:mm", ...rest } = props;
 
   return (
     <Controller
-      name={(name || "") + id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (_time: any, timeString: any) => {

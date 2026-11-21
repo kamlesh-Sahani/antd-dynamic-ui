@@ -6,18 +6,17 @@ import { isArray } from '../../utils/main.utils';
 
 export interface DateRangeFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
 }
 
 export function DateRangeField(props: DateRangeFieldProps) {
-  const { placeholder, disabled, options: _options, onChange, value: _value, className, id, name, control, ...rest } = props;
+  const { placeholder, disabled, options: _options, onChange, value: _value, className, id, control, ...rest } = props;
 
   return (
     <Controller
-      name={(name || "") + id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {
