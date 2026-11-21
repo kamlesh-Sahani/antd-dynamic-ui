@@ -38,6 +38,13 @@ A high-productivity, modular, schema-driven UI toolkit for **React** and **Ant D
   - [String, Formatting & Color Utilities](#5-string-formatting--color-utilities)
   - [Theme & Provider Utilities](#6-theme--provider-utilities)
   - [Utility Code Examples](#7-utility-code-examples)
+- [Custom Hooks Reference](#-custom-hooks-reference)
+  - [Hooks Summary Table](#1-hooks-summary-table)
+  - [useFetch](#2-usefetch)
+  - [useGridFilters](#3-usegridfilters)
+  - [useApiOptions](#4-useapioptions)
+  - [useSafeControl](#5-usesafecontrol)
+  - [useDynamicUI](#6-usedynamicui)
 - [Framework Integration Guide](#-framework-integration-guide)
   - [Standard React SPA (Vite / CRA / React Router)](#standard-react-spa-vite--cra--react-router)
   - [Next.js App Router (Next.js 14 / 15 / 16)](#app-router-nextjs-14--15--16)
@@ -876,6 +883,280 @@ try {
 } catch (err) {
   const message = responseError(err);
   console.error("Submission failed:", message);
+}
+```
+
+---
+
+## 🪝 Custom Hooks Reference
+
+`antd-dynamic-ui` provides a set of highly optimized, modular React hooks designed for declarative data fetching, grid filter state synchronization, remote option streaming, safe form control resolution, and global UI context integration.
+
+---
+
+### 1. Hooks Summary Table
+
+| Hook | Modular Import Subpath | Root / Barrel Export | Parameters / Arguments | Return Value | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`useFetch`** | `antd-dynamic-ui/hooks/use-fetch` | `{ useFetch }` | `{ client, url, options?, body?, manual?, dontCall?, onSuccess? }` | `{ data, loading, error, refetch }` | Declarative HTTP data-fetching hook with automatic `AbortController` cancellation, conditional dispatch (`dontCall`), manual triggers, unified error extraction via `responseError`, and `onSuccess` callback. |
+| **`useGridFilters`** | `antd-dynamic-ui/hooks/use-grid-filters` | `{ useGridFilters }` | `(key: string, defaultValue?: T)` | `[filters, setFilters]` | High-performance, isolated table filter state hook backed by an internal Zustand store. Only components subscribed to the specified `key` re-render upon filter changes (eliminating global table re-renders and slow `window` event listeners). |
+| **`useApiOptions`** | `antd-dynamic-ui/hooks/use-api-options` | `{ useApiOptions }` | `{ apiUrl?, apiMethod?, method?, searchParam?, labelPath?, valuePath?, limit?, debounceMs?, extraParams?, onFormatData?, initialValue?, refreshTrigger? }` | `{ options, loading, search, setSearch, refresh, hasMore, loadMore }` | Remote option loader with automatic debounced server-side search, cursor pagination, data mapping, and caching. Powers `SelectApiField` and async search dropdowns. |
+| **`useSafeControl`** | `antd-dynamic-ui/hooks/use-safe-control` | `{ useSafeControl }` | `(control?, componentName = "FormField", id = "")` | `Control \| undefined` | Safely retrieves the active React Hook Form `control` instance. Automatically falls back to `useFormContext().control` if no explicit `control` prop is supplied, and logs helpful developer warnings in non-production environments when used outside a `<FormProvider>`. |
+| **`useDynamicUI`** | `antd-dynamic-ui/context` | `{ useDynamicUI }` | `()` | `{ apiClient, onNavigate, locales, t, permissionChecker, theme }` | Accesses global application context settings, including client routing navigation (`onNavigate`), translation/localization dictionaries (`t`), permission checking callbacks (`permissionChecker`), and theme tokens. |
+
+---
+
+### 2. `useFetch`
+
+`useFetch` provides an ergonomic, declarative interface for executing HTTP requests with `velocity-http` or Axios clients. It automatically cancels pending in-flight requests when the component unmounts or parameters change, preventing race conditions and memory leaks.
+
+#### Configuration Options
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `client` | `(url: string, ...args) => Promise<VelocityResponse>` | *(Required)* | HTTP client method (e.g. `api.get`, `api.post`). |
+| `url` | `string` | *(Required)* | API endpoint URL. |
+| `body` | `any` | `undefined` | Request payload for POST, PUT, or PATCH requests. |
+| `options` | `VelocityConfig` | `{}` | Additional headers, timeout, or query parameter overrides. |
+| `manual` | `boolean` | `false` | When `true`, skips automatic fetching on mount. Trigger manually via `refetch()`. |
+| `dontCall` | `boolean` | `false` | When `true`, conditionally disables fetching (e.g., waiting for an entity ID). |
+| `onSuccess` | `(data: R) => void` | `undefined` | Callback invoked upon successful response resolution. |
+
+#### Example Usage
+
+```tsx
+import React from "react";
+import { useFetch } from "antd-dynamic-ui/hooks/use-fetch";
+import { api } from "antd-dynamic-ui/utils/api";
+import { Spin, Button } from "antd";
+
+interface UserProfileData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export function UserProfileCard({ userId }: { userId?: string }) {
+  const { data, loading, error, refetch } = useFetch<UserProfileData>({
+    client: api.get,
+    url: `/api/v1/users/${userId}`,
+    dontCall: !userId, // Do not trigger until a valid userId exists
+    onSuccess: (user) => {
+      console.log("Loaded profile for:", user.name);
+    },
+  });
+
+  if (loading) return <Spin tip="Loading profile..." />;
+  if (error) {
+    return (
+      <div className="text-red-500">
+        Failed to load: {error}
+        <Button onClick={() => refetch()} size="small" className="ml-2">Retry</Button>
+      </div>
+    );
+  }
+  if (!data) return <div>No user selected</div>;
+
+  return (
+    <div className="p-4 border rounded-lg">
+      <h3 className="font-bold">{data.name}</h3>
+      <p className="text-gray-500">{data.email}</p>
+      <span className="badge">{data.role}</span>
+    </div>
+  );
+}
+```
+
+---
+
+### 3. `useGridFilters`
+
+`useGridFilters` synchronizes filter, search, pagination, and sorting state between independent UI controls (e.g., an external search bar, filter drawer, column customizer) and `DynamicTable` or `StaticTable`. Backed by an internal Zustand store, it ensures only components sharing the specified `key` re-render upon state changes.
+
+#### Example Usage
+
+```tsx
+import React from "react";
+import { useGridFilters } from "antd-dynamic-ui/hooks/use-grid-filters";
+import { DynamicTable } from "antd-dynamic-ui/dynamic-table";
+import { Input, Button } from "antd";
+
+// 1. Separate Filter Header Component
+export function UsersTableToolbar() {
+  const [filters, setFilters] = useGridFilters("users_management_grid");
+
+  return (
+    <div className="flex gap-3 mb-4 items-center">
+      <Input.Search
+        placeholder="Search users..."
+        value={filters?.tableSearch || ""}
+        onChange={(e) => setFilters({ tableSearch: e.target.value })}
+        style={{ width: 260 }}
+      />
+      <Button onClick={() => filters.refresh?.()}>
+        Reload Data
+      </Button>
+    </div>
+  );
+}
+
+// 2. Table Component Connected via matching filterKey
+export function UsersManagementPage() {
+  return (
+    <div className="p-6">
+      <UsersTableToolbar />
+      <DynamicTable
+        filterKey="users_management_grid" // Shares state seamlessly with UsersTableToolbar
+        apiData={{ apiUrl: "/api/v1/users" }}
+      />
+    </div>
+  );
+}
+```
+
+---
+
+### 4. `useApiOptions`
+
+`useApiOptions` powers dynamic, remote autocomplete and select fields. It includes automatic query debouncing, client-side caching, cursor-based and limit-based pagination, and response normalization.
+
+#### Configuration Options
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `apiUrl` | `string` | *(Optional)* | Remote API endpoint to query options from. |
+| `apiMethod` | `(params) => Promise<any>` | `undefined` | Custom fetcher method (overrides `apiUrl`). |
+| `method` | `"GET" \| "POST"` | `"GET"` | HTTP method. |
+| `searchParam` | `string` | `"search"` | Query string parameter name for text search. |
+| `labelPath` | `string` | `undefined` | Dot-notated path to extract display label from each item (e.g. `"user.fullName"`). |
+| `valuePath` | `string` | `undefined` | Dot-notated path to extract item value (e.g. `"user.id"`). |
+| `limit` | `number` | `50` | Maximum items requested per query. |
+| `debounceMs` | `number` | `400` | Search debounce timeout in milliseconds. |
+| `extraParams` | `Record<string, any>` | `{}` | Static payload or query parameters to merge into every request. |
+| `onFormatData` | `(data: any[]) => any[]` | `undefined` | Custom formatting hook to transform backend data into `{ key, value }[]`. |
+
+#### Example Usage
+
+```tsx
+import React from "react";
+import { useApiOptions } from "antd-dynamic-ui/hooks/use-api-options";
+import { Select } from "antd";
+
+export function CustomerAsyncSelect({
+  value,
+  onChange,
+}: {
+  value?: string;
+  onChange: (val: string) => void;
+}) {
+  const { options, loading, setSearch } = useApiOptions({
+    apiUrl: "/api/v1/customers",
+    searchParam: "query",
+    labelPath: "companyName", // Extracts item.companyName as the dropdown label
+    valuePath: "customerId",  // Extracts item.customerId as the select value
+    debounceMs: 300,
+    extraParams: { activeOnly: true },
+  });
+
+  return (
+    <Select
+      showSearch
+      filterOption={false}
+      onSearch={setSearch}
+      loading={loading}
+      options={options}
+      value={value}
+      onChange={onChange}
+      placeholder="Type to search customers..."
+      style={{ width: "100%" }}
+    />
+  );
+}
+```
+
+---
+
+### 5. `useSafeControl`
+
+When authoring custom form components or wrappers, components often need to support both explicit `control={control}` props and implicit `<FormProvider>` ancestor contexts. `useSafeControl` inspects props first, falls back to `useFormContext().control`, and emits clear developer warnings in non-production mode if neither is available.
+
+#### Example Usage
+
+```tsx
+import React from "react";
+import { useSafeControl } from "antd-dynamic-ui/hooks/use-safe-control";
+import { useController, Control, FieldValues } from "react-hook-form";
+import { Input } from "antd";
+
+export interface CustomFieldProps {
+  id: string;
+  label: string;
+  control?: Control<FieldValues, any, FieldValues>;
+}
+
+export function CustomInputField({ id, label, control }: CustomFieldProps) {
+  // Gracefully resolves control from prop or ancestor FormProvider
+  const safeControl = useSafeControl(control, "CustomInputField", id);
+
+  const { field, fieldState } = useController({
+    name: id,
+    control: safeControl,
+    defaultValue: "",
+  });
+
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium">{label}</label>
+      <Input {...field} status={fieldState.error ? "error" : undefined} />
+      {fieldState.error && (
+        <span className="text-xs text-red-500">{fieldState.error.message}</span>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+### 6. `useDynamicUI`
+
+`useDynamicUI` allows any child component to consume global application settings provided by `<DynamicUIProvider>`:
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `onNavigate` | `(url: string, target?: string) => void` | Global routing callback (e.g. `router.push` or React Router `navigate`). |
+| `t` | `(key: string, fallback?: string) => string` | Translation / localization function. |
+| `permissionChecker` | `(permission: string) => boolean` | Permission verification callback for action buttons and audit logs. |
+| `theme` | `DynamicUITheme` | Global theme settings (`primaryColor`, `mode`, `borderRadius`). |
+| `apiClient` | `any` | Global HTTP client instance. |
+
+#### Example Usage
+
+```tsx
+import React from "react";
+import { useDynamicUI } from "antd-dynamic-ui/context";
+import { Button } from "antd";
+
+export function TableActionButton({
+  url,
+  requiredRole,
+}: {
+  url: string;
+  requiredRole?: string;
+}) {
+  const { onNavigate, permissionChecker, t } = useDynamicUI();
+
+  // Hide button if current user does not meet permission criteria
+  if (requiredRole && !permissionChecker(requiredRole)) {
+    return null;
+  }
+
+  return (
+    <Button type="primary" onClick={() => onNavigate(url)}>
+      {t("actions.view_record", "View Record")}
+    </Button>
+  );
 }
 ```
 
