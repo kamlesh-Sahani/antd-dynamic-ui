@@ -5,7 +5,6 @@ import { Control, Controller, FieldValues } from "react-hook-form";
 
 export interface NumberFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
@@ -27,7 +26,6 @@ export function NumberField(props: NumberFieldProps) {
     value: _value,
     className,
     id,
-    name,
     control,
     addonBefore,
     addonAfter,
@@ -43,7 +41,7 @@ export function NumberField(props: NumberFieldProps) {
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (val: number | null) => {

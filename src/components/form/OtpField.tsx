@@ -5,7 +5,6 @@ import "./fields.module.css";
 
 export interface OtpFieldProps {
   id: string;
-  name?: string;
   onChange?: (val: string) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
@@ -15,11 +14,11 @@ export interface OtpFieldProps {
 }
 
 export function OtpField(props: OtpFieldProps) {
-  const { disabled, onChange, className, id, name, control, length = 6, size = "large", ...rest } = props;
+  const { disabled, onChange, className, id, control, length = 6, size = "large", ...rest } = props;
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (text: string) => {

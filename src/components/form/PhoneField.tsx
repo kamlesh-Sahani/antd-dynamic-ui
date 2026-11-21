@@ -9,14 +9,13 @@ import { FieldConfig } from '../../types/formField.types';
 
 export interface PhoneFieldProps extends Partial<FieldConfig> {
   id: string;
-  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
 }
 
 const PhoneField = (props: PhoneFieldProps) => {
-  const { placeholder, disabled, onChange, value: _value, className, id, name, control, ...rest } = props;
+  const { placeholder, disabled, onChange, value: _value, className, id, control, ...rest } = props;
   const [selectedCountry, setSelectedCountry] = useState("IN");
   const [searchValue, setSearchValue] = useState("");
 
@@ -48,7 +47,7 @@ const PhoneField = (props: PhoneFieldProps) => {
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const currentDialCode = selectedCountryData?.dial || "";

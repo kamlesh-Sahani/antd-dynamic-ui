@@ -21,7 +21,6 @@ export interface SelectCreateAction {
 export type SelectPropsType = Omit<SelectProps<any>, "onChange" | "options" | "placeholder"> &
   Partial<FieldConfig> & {
     id: string;
-    name?: string;
     onChange?: ({ value, option }: { value: string; option: any }) => void;
     className?: string;
     formItemClassName?: string;
@@ -52,7 +51,6 @@ function SelectFieldComponent(props: SelectPropsType) {
     formItemClassName,
     formItemStyle,
     id,
-    name,
     control,
     create,
     popupRender: customPopupRender,
@@ -175,7 +173,7 @@ function SelectFieldComponent(props: SelectPropsType) {
 
   return (
     <Controller
-      name={name || id}
+      name={id}
       control={control}
       render={({ field, fieldState }) => {
         const valKey = resolvedFieldNames.value || "key";
