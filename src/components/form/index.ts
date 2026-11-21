@@ -27,5 +27,6 @@ export { default as RichTextEditor } from "./RichTextEditor";
 export { default as FormStatusMessage } from "./FormStatusMessage";
 export { default as FormSkeleton } from "./FormSkeleton";
 export { default as NotFundField } from "./NotFundField";
+export { default as NotFoundField } from "./NotFundField";
 export { default as UploadField } from "./upload";
 export * from "./upload";

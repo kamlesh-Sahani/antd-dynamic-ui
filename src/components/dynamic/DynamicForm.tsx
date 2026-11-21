@@ -30,6 +30,8 @@ export interface DynamicFormProps {
   initialValues?: Record<string, any>;
   /** Callback fired on successful form submission */
   onSubmit?: (data: any) => void | Promise<void>;
+  /** Callback fired on validation error */
+  onError?: (errors: Record<string, any>) => void;
   /** Custom label for submit button (default: "Submit") */
   submitText?: string;
   /** Whether form submission is in progress */
@@ -49,6 +51,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   schema: propSchema,
   initialValues: propInitialValues = {},
   onSubmit,
+  onError,
   submitText = "Submit",
   isSubmitting = false,
   showSubmitButton = true,
@@ -94,7 +97,11 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       }
     },
     (errors) => {
-      console.warn("Validation errors:", errors);
+      if (onError) {
+        onError(errors);
+      } else if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+        console.warn("[antd-dynamic-ui] DynamicForm validation errors:", errors);
+      }
     }
   );
 

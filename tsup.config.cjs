@@ -69,6 +69,7 @@ module.exports = {
     "hooks/use-grid-filters/index": "src/hooks/useGridFilters.ts",
     "hooks/use-api-options/index": "src/hooks/useApiOptions.ts",
     "hooks/use-fetch/index": "src/hooks/useFetch.ts",
+    "hooks/use-safe-control/index": "src/hooks/useSafeControl.ts",
     "hooks/index": "src/hooks/index.ts",
 
     // Utils
