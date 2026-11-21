@@ -270,7 +270,8 @@
     "build": "tsup --config tsup.config.cjs",
     "dev": "tsup --config tsup.config.cjs --watch",
     "typecheck": "tsc --noEmit",
-    "test": "node --test test/*.test.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run test && npm run typecheck && npm run build",
     "clean": "rm -rf dist"
   },
@@ -316,14 +317,19 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.13",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/react-modal": "^3.16.3",
+    "jsdom": "^29.1.1",
     "postcss": "^8.4.49",
     "tsup": "^8.5.1",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^5.1.1"
   },
   "overrides": {
     "esbuild": "^0.28.2"

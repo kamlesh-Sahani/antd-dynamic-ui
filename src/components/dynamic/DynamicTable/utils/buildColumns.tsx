@@ -81,18 +81,25 @@ export function buildColumns(
         };
       }
 
+      const colKey = col.id || (col as any).key;
+
       return {
         title: col.title,
-        dataIndex: col.id,
-        key: col.id,
+        dataIndex: colKey,
+        key: colKey,
         fixed: col.fixed as "left" | "right" | undefined,
         width: col.width ?? 280,
         ellipsis: col.ellipsis,
         sorter: col.sortable,
         ...filterProps,
-        render: (cells: TableCellType[], record: any) => {
-          if (!isNotEmptyArray(cells)) return null;
-          return <CompositeCell cells={cells} record={record} onActionClick={onActionClick} />;
+        render: (cells: any, record: any) => {
+          if (cells === undefined || cells === null) return null;
+          const cellArray = Array.isArray(cells)
+            ? cells
+            : typeof cells === "object" && cells.type
+            ? [cells]
+            : [{ type: "TEXT", title: String(cells) }];
+          return <CompositeCell cells={cellArray} record={record} onActionClick={onActionClick} />;
         },
       };
     });

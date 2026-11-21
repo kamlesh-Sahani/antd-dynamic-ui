@@ -2,6 +2,7 @@ import { Form, Input } from "antd";
 import { FieldConfig } from '../../types/formField.types';
 import classNames from "classnames";
 import { Control, Controller, FieldValues } from "react-hook-form";
+import { useSafeControl } from "../../hooks/useSafeControl";
 
 
 export interface PasswordFieldProps extends Partial<FieldConfig> {
@@ -10,7 +11,7 @@ export interface PasswordFieldProps extends Partial<FieldConfig> {
   autoComplete?: string;
   onChange?: (val: any) => void;
   className?: string;
-  control: Control<FieldValues, any, FieldValues>;
+  control?: Control<FieldValues, any, FieldValues>;
 }
 
 export function PasswordField(props: PasswordFieldProps) {
@@ -21,10 +22,27 @@ export function PasswordField(props: PasswordFieldProps) {
     value: opt.value,
   }));
 
+  const activeControl = useSafeControl(control, "PasswordField", id);
+
+  if (!activeControl) {
+    return (
+      <Input.Password
+        id={id}
+        className={classNames("w-full hover:border-primary-400 transition-all", className)}
+        placeholder={placeholder}
+        disabled={disabled}
+        size="middle"
+        autoComplete={autoComplete || "new-password"}
+        onChange={(e) => onChange?.(e.target.value)}
+        {...rest}
+      />
+    );
+  }
+
   return (
     <Controller
       name={name || id}
-      control={control}
+      control={activeControl}
       render={({ field, fieldState }) => {
         const handleChange = (val: any) => {
 

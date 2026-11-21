@@ -2,6 +2,7 @@ import { Form, Input } from "antd";
 import { FieldConfig } from '../../types/formField.types';
 import classNames from "classnames";
 import { Control, Controller, FieldValues } from "react-hook-form";
+import { useSafeControl } from "../../hooks/useSafeControl";
 
 import { RegisterOptions } from "react-hook-form";
 
@@ -10,7 +11,7 @@ export interface InputFieldProps extends Omit<Partial<FieldConfig>, 'type'> {
   name?: string;
   onChange?: (val: any) => void;
   className?: string;
-  control: Control<FieldValues, any, FieldValues>;
+  control?: Control<FieldValues, any, FieldValues>;
   addonAfter?: React.ReactNode;
   addonBefore?: React.ReactNode;
   prefix?: React.ReactNode;
@@ -50,10 +51,26 @@ export function InputField(props: InputFieldProps) {
     ...rest
   } = props as any;
 
+  const activeControl = useSafeControl(control, "InputField", id);
+
+  if (!activeControl) {
+    return (
+      <Input
+        id={id}
+        placeholder={placeholder}
+        disabled={disabled}
+        size="middle"
+        className={classNames("w-full hover:border-primary-400 transition-all", className)}
+        onChange={(e) => onChange?.(e.target.value)}
+        {...rest}
+      />
+    );
+  }
+
   return (
     <Controller
       name={name || id}
-      control={control}
+      control={activeControl}
       rules={rules}
       render={({ field, fieldState }) => {
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

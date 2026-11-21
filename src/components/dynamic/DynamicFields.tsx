@@ -101,7 +101,7 @@ const evaluateConditions = (
 };
 
 
-const DynamicFields: React.FC<DynamicFieldsProps> = ({ rows, methods, style, namePrefix = "customTags" }) => {
+const DynamicFields: React.FC<DynamicFieldsProps> = ({ rows, methods, style, namePrefix = "" }) => {
   if (!isNotEmptyArray(rows)) return null;
 
   return (
@@ -120,7 +120,7 @@ export default memo(DynamicFields);
 const SingleField = memo(function SingleField({
   config,
   control,
-  namePrefix = "customTags",
+  namePrefix = "",
 }: {
   config: FieldConfig;
   control: any;
@@ -129,9 +129,9 @@ const SingleField = memo(function SingleField({
   const dependentFields = useMemo(
     () =>
       isNotEmptyArray(config?.conditions)
-        ? config?.conditions?.map((c) => c.field)
+        ? config?.conditions?.map((c) => (namePrefix ? `${namePrefix}.${c.field}` : c.field))
         : [],
-    [config?.conditions],
+    [config?.conditions, namePrefix],
   );
 
   const watchedValues = useWatch({
@@ -154,7 +154,7 @@ const SingleField = memo(function SingleField({
   const Field = fields[config?.type] || NotFundField;
   const label = config?.label;
   const prefix = namePrefix ? `${namePrefix}.` : "";
-  const formFieldName = `${prefix}${config?.id}`;
+  const formFieldName = config?.name || (prefix ? `${prefix}${config?.id}` : config?.id);
   return (
     <Col span={config?.span || 24} offset={config?.offset || 0} className="mb-4">
       {

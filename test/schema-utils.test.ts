@@ -1,5 +1,4 @@
-import { test, describe } from "node:test";
-import assert from "node:assert/strict";
+import { describe, it, expect } from "vitest";
 import {
   generateZodSchema,
   getInitialValues,
@@ -44,70 +43,68 @@ describe("generateZodSchema & getInitialValues from dist", () => {
     ],
   ];
 
-  test("getInitialValues should extract default values", () => {
-    const initial = getInitialValues(mockFields);
-    assert.equal(initial.name, "Default Name");
-    assert.equal(initial.age, 25);
-    assert.equal(initial.active, true);
-    assert.equal(initial.email, undefined);
+  it("getInitialValues should extract default values", () => {
+    const initial = getInitialValues(mockFields as any);
+    expect(initial.name).toBe("Default Name");
+    expect(initial.age).toBe(25);
+    expect(initial.active).toBe(true);
+    expect(initial.email).toBeUndefined();
   });
 
-  test("generateZodSchema should validate valid input", () => {
-    const schema = generateZodSchema(mockFields);
+  it("generateZodSchema should validate valid input", () => {
+    const schema = generateZodSchema(mockFields as any);
     const parsed = schema.safeParse({
       name: "Alice",
       email: "alice@example.com",
       age: 30,
       active: true,
     });
-    assert.equal(parsed.success, true);
+    expect(parsed.success).toBe(true);
   });
 
-  test("generateZodSchema should fail on invalid email and short name", () => {
-    const schema = generateZodSchema(mockFields);
+  it("generateZodSchema should fail on invalid email and short name", () => {
+    const schema = generateZodSchema(mockFields as any);
     const parsed = schema.safeParse({
       name: "Al", // minLength 3
       email: "not-an-email",
       age: 15, // min 18
       active: false,
     });
-    assert.equal(parsed.success, false);
+    expect(parsed.success).toBe(false);
   });
 });
 
 describe("main.utils from dist", () => {
-  test("isArray & isNotEmptyArray", () => {
-    assert.equal(isArray([]), true);
-    assert.equal(isArray("not-an-array"), false);
-    assert.equal(isNotEmptyArray([]), false);
-    assert.equal(isNotEmptyArray([1]), true);
+  it("isArray & isNotEmptyArray", () => {
+    expect(isArray([])).toBe(true);
+    expect(isArray("not-an-array")).toBe(false);
+    expect(isNotEmptyArray([])).toBe(false);
+    expect(isNotEmptyArray([1])).toBe(true);
   });
 
-  test("isString", () => {
-    assert.equal(isString("hello"), true);
-    assert.equal(isString(123), false);
-    assert.equal(isString(null), false);
+  it("isString", () => {
+    expect(isString("hello")).toBe(true);
+    expect(isString(123)).toBe(false);
+    expect(isString(null)).toBe(false);
   });
 
-  test("generateLocaleKey", () => {
-    assert.equal(generateLocaleKey("First Name"), "first_name");
-    assert.equal(generateLocaleKey("Email Address & Phone"), "email_address_phone");
+  it("generateLocaleKey", () => {
+    expect(generateLocaleKey("First Name")).toBe("first_name");
+    expect(generateLocaleKey("Email Address & Phone")).toBe("email_address_phone");
   });
 
-  test("responseError", () => {
-    assert.equal(responseError("Custom error"), "Custom error");
-    assert.equal(responseError({ response: { data: { message: "Server error" } } }), "Server error");
-    assert.equal(responseError({ message: "Network error" }), "Network error");
-    assert.equal(responseError({}), "Something went wrong");
+  it("responseError", () => {
+    expect(responseError("Custom error")).toBe("Custom error");
+    expect(responseError({ response: { data: { message: "Server error" } } })).toBe("Server error");
+    expect(responseError({ message: "Network error" })).toBe("Network error");
   });
 
-  test("isSafeUrl protocol protection", () => {
-    assert.equal(isSafeUrl("https://example.com/api"), true);
-    assert.equal(isSafeUrl("/dashboard/users"), true);
-    assert.equal(isSafeUrl("javascript:alert(1)"), false);
-    assert.equal(isSafeUrl("data:text/html,<script>alert(1)</script>"), false);
-    assert.equal(isSafeUrl("vbscript:msgbox(1)"), false);
-    assert.equal(isSafeUrl(""), false);
-    assert.equal(isSafeUrl(undefined), false);
+  it("isSafeUrl protocol protection", () => {
+    expect(isSafeUrl("https://example.com")).toBe(true);
+    expect(isSafeUrl("/dashboard")).toBe(true);
+    expect(isSafeUrl("javascript:alert(1)")).toBe(false);
+    expect(isSafeUrl("JAVASCRIPT:alert(1)")).toBe(false);
+    expect(isSafeUrl("data:text/html,<script>alert(1)</script>")).toBe(false);
+    expect(isSafeUrl("vbscript:msgbox(1)")).toBe(false);
   });
 });

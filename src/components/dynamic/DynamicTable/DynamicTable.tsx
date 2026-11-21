@@ -84,7 +84,8 @@ export default function DynamicTable({
   // ─── Data fetching ────────────────────────────────────────────────────────
   const response = useFetch<TableResponseType>({
     client: api.post,
-    url: apiData?.apiUrl,
+    url: apiData?.apiUrl || "",
+    dontCall: !apiData?.apiUrl,
     body: postBody,
     onSuccess: (data: any) => {
       if (!isNotEmptyObject(data?.data)) return;
@@ -99,7 +100,7 @@ export default function DynamicTable({
   const [accumulatedRows, setAccumulatedRows] = useState<any[]>([]);
 
   useEffect(() => {
-    const rawRows = response?.data?.data?.rows || [];
+    const rawRows = response?.data?.data?.rows || (apiData as any)?.rows || [];
     const processedRows = rawRows.map((row: any, index: number) => ({
       ...row,
       _rowKey: row._rowKey || `row-${payload.page}-${payload.cursor}-${index}`,
@@ -151,7 +152,7 @@ export default function DynamicTable({
 
   // ─── Memoized columns ────────────────────────────────────────────────────
   const columns = useMemo(() => {
-    const rawColumns = response.data?.data?.columns || [];
+    const rawColumns = response.data?.data?.columns || (apiData as any)?.columns || [];
     let processed = buildColumns(rawColumns, onActionClick, filters?.columnFilters);
 
     if (isNotEmptyArray(filters?.hiddenColumns)) {
@@ -322,7 +323,7 @@ export default function DynamicTable({
   }, [columns]);
 
   // ─── Initial loading state (no data yet) ──────────────────────────────────
-  if (response.loading && isFirstCall) {
+  if (response.loading && isFirstCall && apiData?.apiUrl) {
     return (
       <div className="flex flex-col h-full min-h-0">
         <TableSkeleton rows={payload.limit} columns={columns.length || 4} />
@@ -348,8 +349,8 @@ export default function DynamicTable({
         theme={{ components: { Table: TABLE_THEME } }}
       >
         <Table<any>
+          virtual={tableProps.virtual ?? false}
           {...tableProps}
-          virtual
           bordered={bordered}
           columns={columns}
           dataSource={rows}

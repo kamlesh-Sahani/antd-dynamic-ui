@@ -61,8 +61,11 @@ export const generateZodSchema = (fieldsOrRows: FieldConfig[] | FieldConfig[][])
       }
     }
 
+    const isConditional = Boolean(field.conditions && field.conditions.length > 0);
+    const isRequired = Boolean(field.required || validation?.required);
+
     // Handle required vs optional
-    if (validation?.required) {
+    if (isRequired && !isConditional) {
       if (type === "checkbox") {
         fieldSchema = fieldSchema.min(1, validation?.customMessage || `${label || "Field"} is required`);
       } else if (type !== "number" && type !== "rating" && type !== "slider" && type !== "toggle") {

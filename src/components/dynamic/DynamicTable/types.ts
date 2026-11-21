@@ -3,11 +3,14 @@
 export type ApiMethod = "get" | "post" | "put" | "delete";
 
 export interface ApiDataType<T = any> {
-  apiUrl: string;
-  apiType: ApiMethod;
+  apiUrl?: string;
+  apiType?: ApiMethod;
   params?: Record<string, string>;
   body?: Record<string, any>;
   data?: T;
+  columns?: TableColumnType[];
+  rows?: any[];
+  total?: number;
 }
 
 // ─── Cell Types (Discriminated Union) ────────────────────────────────────────

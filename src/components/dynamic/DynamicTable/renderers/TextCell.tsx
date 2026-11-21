@@ -3,7 +3,8 @@ import { memo } from "react";
 import { Tooltip } from "antd";
 import type { TextCellType } from "../types";
 
-function TextCell({ title, isEllipses, isBold, color, fontSize }: TextCellType) {
+function TextCell({ title, text, isEllipses, isBold, color, fontSize }: any) {
+  const displayTitle = title ?? text ?? "";
   const style: React.CSSProperties = {
     fontWeight: isBold ? 600 : 500,
     color: color === "primary" ? "var(--primary)" : color === "secondary" ? "var(--secondary)" : color,
@@ -16,10 +17,10 @@ function TextCell({ title, isEllipses, isBold, color, fontSize }: TextCellType) 
     display: "block",
   };
 
-  const content = <span style={style} >{title}</span>;
+  const content = <span style={style}>{displayTitle}</span>;
 
-  if (isEllipses && title?.length > 25) {
-    return <Tooltip title={title}>{content}</Tooltip>;
+  if (isEllipses && displayTitle?.length > 25) {
+    return <Tooltip title={displayTitle}>{content}</Tooltip>;
   }
   return content;
 }

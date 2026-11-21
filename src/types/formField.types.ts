@@ -1,6 +1,8 @@
 export type FieldType =
   | "text"
+  | "input"
   | "email"
+  | "password"
   | "number"
   | "phone"
   | "url"
@@ -11,17 +13,22 @@ export type FieldType =
   | "checkbox"
   | "toggle"
   | "date"
+  | "daterange"
   | "time"
+  | "timerange"
   | "datetime"
   | "file"
   | "image"
   | "rating"
   | "slider"
   | "color"
+  | "cascader"
+  | "hidden"
   | "heading"
   | "paragraph"
   | "divider"
-  | "chart";
+  | "chart"
+  | (string & {});
 
 export interface ValidationRule {
   required?: boolean;
@@ -83,6 +90,7 @@ export interface UploadConfig {
 
 export interface FieldConfig {
   id: string;
+  name?: string;
   tooltip?: string;
   type: FieldType;
   label?: string;
@@ -92,6 +100,7 @@ export interface FieldConfig {
   defaultValue?: any;
   options?: FieldOption[];
   validation?: ValidationRule;
+  required?: boolean;
   color?: string;
   fontSize?: string;
   fontWeight?: number;
