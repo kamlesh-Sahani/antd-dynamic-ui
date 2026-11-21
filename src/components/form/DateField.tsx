@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 
 export interface DateFieldProps extends Partial<FieldConfig> {
   id: string;
+  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
@@ -16,11 +17,11 @@ export interface DateFieldProps extends Partial<FieldConfig> {
 }
 
 export function DateField(props: DateFieldProps) {
-  const { placeholder, disabled, onChange, value: _value, className, id, control, ...rest } = props;
+  const { placeholder, disabled, onChange, value: _value, className, id, name, control, ...rest } = props;
 
   return (
     <Controller
-      name={id}
+      name={name || id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (date: any, _dateString: any) => {

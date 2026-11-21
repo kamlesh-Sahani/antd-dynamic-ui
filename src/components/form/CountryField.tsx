@@ -7,6 +7,7 @@ import { useMemo } from "react";
 
 export interface CountryPropsType extends Partial<FieldConfig> {
   id: string;
+  name?: string;
   onChange?: ({ value, option }: { value: string, option: any }) => void;
   className?: string;
   showSearch?: boolean;
@@ -14,7 +15,7 @@ export interface CountryPropsType extends Partial<FieldConfig> {
 }
 
 export function CountryField(props: CountryPropsType) {
-  const { placeholder, disabled, onChange, showSearch = true, className, id, control, ...rest } = props;
+  const { placeholder, disabled, onChange, showSearch = true, className, id, name, control, ...rest } = props;
 
   const countryOptions = useMemo(() => {
     return COUNTRIES.map((c: any) => ({
@@ -31,7 +32,7 @@ export function CountryField(props: CountryPropsType) {
 
   return (
     <Controller
-      name={id}
+      name={name || id}
       control={control}
       render={({ field, fieldState }) => {
         const handleChange = (value: string, option: any) => {

@@ -1,4 +1,4 @@
-.phone-field :global(.ant-select-suffix) {
+.phone-field .ant-select-suffix {
     position: absolute;
     font-size: 9px !important;
     top: 50% !important;
@@ -6,13 +6,14 @@
     right: 3px;
 }
 
-.phone-field:global(.ant-select-focused) :global(.ant-select-selector) {
+.phone-field.ant-select-focused .ant-select-selector,
+.phone-field .ant-select-focused .ant-select-selector {
     box-shadow: none !important;
     border-right-width: 0 !important;
     outline: none !important;
 }
 
-.phone-field :global(.ant-select-selector) {
+.phone-field .ant-select-selector {
     border-right-width: 0 !important;
 }
 
@@ -23,7 +24,7 @@
     width: 100% !important;
 }
 
-.otp-field :global(.ant-input) {
+.otp-field .ant-input {
     width: 52px !important;
     height: 60px !important;
     font-size: 24px !important;
@@ -35,13 +36,13 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.otp-field :global(.ant-input:hover) {
+.otp-field .ant-input:hover {
     border-color: #fb7185 !important;
     background-color: #ffffff !important;
 }
 
-.otp-field :global(.ant-input:focus),
-.otp-field :global(.ant-input-focused) {
+.otp-field .ant-input:focus,
+.otp-field .ant-input-focused {
     border-color: #e11d48 !important;
     background-color: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.15) !important;

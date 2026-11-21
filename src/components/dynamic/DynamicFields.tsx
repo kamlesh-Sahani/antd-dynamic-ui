@@ -150,6 +150,15 @@ const SingleField = memo(function SingleField({
 
   const Field = fields[config?.type] || NotFundField;
   const label = config?.label;
+  const {
+    mongoId: _mongoId,
+    status: _status,
+    createdAt: _createdAt,
+    updatedAt: _updatedAt,
+    deletedAt: _deletedAt,
+    ...fieldProps
+  } = (config || {}) as any;
+
   return (
     <Col span={config?.span || 24} offset={config?.offset || 0} className="mb-4">
       {
@@ -171,7 +180,7 @@ const SingleField = memo(function SingleField({
           </label>
         )
       }
-      <Field {...config} control={control} />
+      <Field {...fieldProps} control={control} />
     </Col>
   );
 });

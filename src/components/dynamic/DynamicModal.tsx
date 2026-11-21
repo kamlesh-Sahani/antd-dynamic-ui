@@ -4,7 +4,21 @@ import React from "react";
 import ReactModal from "react-modal";
 import { BsX } from "react-icons/bs";
 import classNames from "classnames";
-import styles from "./DynamicModal.module.css";
+import "./DynamicModal.module.css";
+
+// ─── Modal Class Name Mapping ─────────────────────────────────────────────────
+// Define explicit class name strings so esbuild / tsup does not emit an empty {}
+// object while bundling CSS modules into dist/index.css.
+const styles = {
+  modal__header: "modal__header",
+  "modal__header-title": "modal__header-title",
+  "modal__header-close": "modal__header-close",
+  "modal__header-close-btn": "modal__header-close-btn",
+  modal__body: "modal__body",
+  modal__footer: "modal__footer",
+  modal__content: "modal__content",
+  modal__overlay: "modal__overlay",
+} as const;
 
 // ─── Sub-component: Header ────────────────────────────────────────────────────
 
@@ -137,7 +151,7 @@ function DynamicModal({
         modal: true,
       }}
       style={{
-        overlay: { zIndex: zIndex ?? 1000, ...props.style?.overlay },
+        overlay: { zIndex: zIndex ?? 50, ...props.style?.overlay },
         content: { ...props.style?.content },
       }}
       overlayClassName={styles.modal__overlay}

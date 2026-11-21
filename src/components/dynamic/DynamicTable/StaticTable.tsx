@@ -339,10 +339,11 @@ export default function StaticTable({
     return Math.max(calculatedWidth, 800);
   }, [columns, tableProps.scroll?.x]);
 
-  // Adaptive virtualization threshold for large row counts
+  // Virtual scrolling mode: enabled by default for authentic layout & custom scrollbar DOM structure,
+  // disabled in headless jsdom test runners to allow full DOM assertions.
   const isVirtual = tableProps.virtual !== undefined
     ? tableProps.virtual
-    : (rows.length > 50 && typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
+    : (typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
 
   // ─── Initial loading state (no data yet) ──────────────────────────────────
   if (loading && rows.length === 0) {

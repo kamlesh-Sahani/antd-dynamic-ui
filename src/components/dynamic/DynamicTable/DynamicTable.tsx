@@ -352,10 +352,11 @@ export default function DynamicTable({
     return Math.max(calculatedWidth, 800); // Minimum 800 to prevent squishing
   }, [columns]);
 
-  // Adaptive virtualization threshold for large row counts
+  // Virtual scrolling mode: enabled by default for authentic layout & custom scrollbar DOM structure,
+  // disabled in headless jsdom test runners to allow full DOM assertions.
   const isVirtual = tableProps.virtual !== undefined
     ? tableProps.virtual
-    : (rows.length > 50 && typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
+    : (typeof window !== "undefined" && !window.navigator?.userAgent?.includes("jsdom"));
 
   // ─── Initial loading state (no data yet) ──────────────────────────────────
   if (response.loading && isFirstCall && apiData?.apiUrl) {

@@ -8,6 +8,7 @@ import { RegisterOptions } from "react-hook-form";
 
 export interface InputFieldProps extends Omit<Partial<FieldConfig>, 'type'> {
   id: string;
+  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control?: Control<FieldValues, any, FieldValues>;
@@ -29,6 +30,7 @@ export function InputField(props: InputFieldProps) {
     type: _type,
     className,
     id,
+    name,
     control,
     rules,
     autoComplete,
@@ -67,7 +69,7 @@ export function InputField(props: InputFieldProps) {
 
   return (
     <Controller
-      name={id}
+      name={name || id}
       control={activeControl}
       rules={rules}
       render={({ field, fieldState }) => {

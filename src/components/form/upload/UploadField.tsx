@@ -25,6 +25,7 @@ import { isNotEmptyArray, isArray, isString } from '../../../utils/main.utils';
 
 export interface UploadFieldProps extends Omit<Partial<FieldConfig>, "type"> {
   id: string;
+  name?: string;
   control: Control<FieldValues, any, FieldValues>;
   onChange?: (files: UploadFile[]) => void;
   className?: string;
@@ -83,6 +84,7 @@ const formatSize = (bytes?: number): string => {
 export default function UploadField(props: UploadFieldProps) {
   const {
     id,
+    name,
     control,
     onChange,
     className,
@@ -152,7 +154,7 @@ export default function UploadField(props: UploadFieldProps) {
 
   return (
     <Controller
-      name={id}
+      name={name || id}
       control={control}
       render={({ field, fieldState }) => {
         const isUrlMode = valueType === "url" || (maxCount === 1 && isString(field.value));

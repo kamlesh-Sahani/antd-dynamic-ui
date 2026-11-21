@@ -18,7 +18,7 @@ export const generateZodSchema = (fieldsOrRows: FieldConfig[] | FieldConfig[][])
     }
 
     const { id, type, label, validation } = field;
-    const fieldKey = id;
+    const fieldKey = (field as any).name || id;
 
     if (!fieldKey) return;
     

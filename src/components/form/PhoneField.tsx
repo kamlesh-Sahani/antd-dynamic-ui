@@ -2,20 +2,21 @@ import { Form, Input, Select, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { COUNTRIES } from "headless-countries";
 import { useMemo, useState } from "react";
-import style from "./fields.module.css";
+import "./fields.module.css";
 import classNames from "classnames";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import { FieldConfig } from '../../types/formField.types';
 
 export interface PhoneFieldProps extends Partial<FieldConfig> {
   id: string;
+  name?: string;
   onChange?: (val: any) => void;
   className?: string;
   control: Control<FieldValues, any, FieldValues>;
 }
 
 const PhoneField = (props: PhoneFieldProps) => {
-  const { placeholder, disabled, onChange, value: _value, className, id, control, ...rest } = props;
+  const { placeholder, disabled, onChange, value: _value, className, id, name, control, ...rest } = props;
   const [selectedCountry, setSelectedCountry] = useState("IN");
   const [searchValue, setSearchValue] = useState("");
 
@@ -47,7 +48,7 @@ const PhoneField = (props: PhoneFieldProps) => {
 
   return (
     <Controller
-      name={id}
+      name={name || id}
       control={control}
       render={({ field, fieldState }) => {
         const currentDialCode = selectedCountryData?.dial || "";
@@ -113,7 +114,7 @@ const PhoneField = (props: PhoneFieldProps) => {
                 disabled={disabled}
                 styles={{ popup: { root: { width: 280 } } }}
                 onOpenChange={handleOpenChange}
-                className={classNames("bg-secondary py-0", style["phone-field"])}
+                className={classNames("bg-secondary py-0 phone-field")}
                 labelRender={() => (
                   <div className="flex items-center justify-center">
                     <span className="text text-[15px] h-[20px]">{selectedCountryData?.flag}</span>

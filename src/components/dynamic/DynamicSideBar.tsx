@@ -71,7 +71,8 @@ type DynamicSideBarProps = {
     departmentName?: string;
     avatar?: string;
     role?: string;
-  };
+    [key: string]: any;
+  } | null;
   onLogout?: () => void | Promise<void>;
   isFormDirty?: boolean;
   setIsFormDirty?: (dirty: boolean) => void;
@@ -104,7 +105,8 @@ const DynamicSideBarContent: React.FC<DynamicSideBarProps> = ({
   pathname: propPathname,
 }) => {
   const { message } = App.useApp();
-  const { onNavigate } = useDynamicUI();
+  const context = useDynamicUI();
+  const { onNavigate } = context;
   const [collapsed, setCollapsed] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const pathname = propPathname || (typeof window !== "undefined" ? window.location.pathname : "");
@@ -124,13 +126,14 @@ const DynamicSideBarContent: React.FC<DynamicSideBarProps> = ({
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [pendingRouteEvent, setPendingRouteEvent] = useState<any>(null);
 
-  const employee = user;
+  const employee = user !== undefined ? user : (context as any)?.user;
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      if (onLogout) {
-        await onLogout();
+      const activeLogout = onLogout || (context as any)?.onLogout;
+      if (activeLogout) {
+        await activeLogout();
       }
       message.success("Logged out successfully");
     } catch (error) {

@@ -21,6 +21,10 @@ export interface DynamicUIContextValue {
   permissionChecker?: (permission: string) => boolean;
   /** Theme configuration */
   theme?: DynamicUITheme;
+  /** Current user / employee session info for Sidebar, Headers, and user profile widgets */
+  user?: any;
+  /** Logout handler */
+  onLogout?: () => void | Promise<void>;
 }
 
 const DynamicUIContext = createContext<DynamicUIContextValue>({
@@ -45,6 +49,8 @@ export const DynamicUIProvider: React.FC<DynamicUIProviderProps> = ({
   t,
   permissionChecker,
   theme,
+  user,
+  onLogout: onLogoutProp,
 }) => {
   const defaultNavigate = (url: string) => {
     if (typeof window !== "undefined") {
@@ -66,7 +72,9 @@ export const DynamicUIProvider: React.FC<DynamicUIProviderProps> = ({
     t: t || defaultT,
     permissionChecker: permissionChecker || defaultPermCheck,
     theme,
-  }), [apiClient, onNavigate, locales, t, permissionChecker, theme]);
+    user,
+    onLogout: onLogoutProp,
+  }), [apiClient, onNavigate, locales, t, permissionChecker, theme, user, onLogoutProp]);
 
   return (
     <DynamicUIContext.Provider value={value}>
