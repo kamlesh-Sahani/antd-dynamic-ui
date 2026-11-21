@@ -77,6 +77,9 @@ module.exports = {
     "utils/get-initial-values/index": "src/utils/getInitialValues.ts",
     "utils/api/index": "src/utils/api.ts",
     "utils/main/index": "src/utils/main.utils.ts",
+    "utils/number-to-words/index": "src/utils/numberToWords.ts",
+    "utils/adjust-color/index": "src/utils/adjsutColor.utils.ts",
+    "utils/form-validation/index": "src/utils/formValidation.ts",
     "utils/index": "src/utils/index.ts",
 
     // Types

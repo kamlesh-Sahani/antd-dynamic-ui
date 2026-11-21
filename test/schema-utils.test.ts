@@ -108,3 +108,64 @@ describe("main.utils from dist", () => {
     expect(isSafeUrl("vbscript:msgbox(1)")).toBe(false);
   });
 });
+
+describe("additional utilities from dist", () => {
+  it("adjustColor tints and shades hex colors", async () => {
+    const { adjustColor } = await import("../dist/utils/adjust-color/index.js");
+    const lighter = adjustColor("#000000", 50);
+    const darker = adjustColor("#ffffff", -50);
+    expect(lighter).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(darker).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(lighter).not.toBe("#000000");
+    expect(darker).not.toBe("#ffffff");
+  });
+
+  it("numberToWords converts currency figures to words", async () => {
+    const { numberToWords } = await import("../dist/utils/number-to-words/index.js");
+    expect(numberToWords(100, "USD")).toBe("One Hundred United States Dollar Only");
+    expect(numberToWords(0, "USD")).toBe("Zero United States Dollar Only");
+    expect(numberToWords(1250.75, "USD")).toBe("One Thousand Two Hundred Fifty United States Dollar And Seventy Five Cents Only");
+  });
+
+  it("main.utils type guards and helpers", async () => {
+    const {
+      isObject,
+      isNotEmptyObject,
+      isNotEmpty,
+      isNumber,
+      isNotEmptyNumber,
+      isBoolean,
+      isNotEmptyBoolean,
+      debounce,
+    } = await import("../dist/utils/main/index.js");
+
+    expect(isObject({})).toBe(true);
+    expect(isObject([])).toBe(false);
+    expect(isNotEmptyObject({})).toBe(false);
+    expect(isNotEmptyObject({ a: 1 })).toBe(true);
+
+    expect(isNumber(42)).toBe(true);
+    expect(isNumber(NaN)).toBe(false);
+    expect(isNotEmptyNumber(0)).toBe(false);
+    expect(isNotEmptyNumber(42)).toBe(true);
+
+    expect(isBoolean(true)).toBe(true);
+    expect(isNotEmptyBoolean(true)).toBe(true);
+    expect(isNotEmptyBoolean(false)).toBe(false);
+
+    expect(isNotEmpty("hello")).toBe(true);
+    expect(isNotEmpty("   ")).toBe(false);
+    expect(isNotEmpty([1])).toBe(true);
+    expect(isNotEmpty([])).toBe(false);
+    expect(isNotEmpty({ a: 1 })).toBe(true);
+    expect(isNotEmpty({})).toBe(false);
+
+    let called = 0;
+    const fn = debounce(() => {
+      called++;
+    }, 50);
+    fn();
+    fn();
+    expect(called).toBe(0);
+  });
+});

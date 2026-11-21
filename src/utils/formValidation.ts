@@ -26,3 +26,5 @@ export const validatePhoneNumber = (val: string | undefined, ctx: z.RefinementCt
     });
   }
 };
+
+export default validatePhoneNumber;

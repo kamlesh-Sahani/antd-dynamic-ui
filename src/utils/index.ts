@@ -1,10 +1,14 @@
 export * from "./main.utils";
 export * from "./adjsutColor.utils";
+export { default as adjustColor } from "./adjsutColor.utils";
 export * from "./formValidation";
+export { default as validatePhoneNumber } from "./formValidation";
 export * from "./getInitialValues";
 export { default as getInitialValues } from "./getInitialValues";
 export * from "./generateZodSchema";
+export { default as generateZodSchema } from "./generateZodSchema";
 export * from "./numberToWords";
+export { default as numberToWords } from "./numberToWords";
 export * from "./api";
 export { default as api } from "./api";
 export * from "./AntdProviders";

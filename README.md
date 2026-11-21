@@ -30,6 +30,14 @@ A high-productivity, modular, schema-driven UI toolkit for **React** and **Ant D
   - [DynamicHeader & DynamicSideBar](#5-dynamicheader--dynamicsidebar)
 - [Standardized Form Fields](#-standardized-form-fields)
 - [Schema Engine & Validation](#-schema-engine--validation)
+- [Utilities Reference](#-utilities-reference)
+  - [Form & Schema Utilities](#1-form--schema-utilities)
+  - [HTTP Client & API Helpers](#2-http-client--api-helpers)
+  - [Security & URL Sanitization](#3-security--url-sanitization)
+  - [Type Guards & Validation Helpers](#4-type-guards--validation-helpers)
+  - [String, Formatting & Color Utilities](#5-string-formatting--color-utilities)
+  - [Theme & Provider Utilities](#6-theme--provider-utilities)
+  - [Utility Code Examples](#7-utility-code-examples)
 - [Next.js Integration Guide](#-nextjs-integration-guide)
   - [App Router (Next.js 14 / 15 / 16)](#app-router-nextjs-14--15--16)
   - [Pages Router](#pages-router)
@@ -318,7 +326,12 @@ Production build comparison using Rollup & Vite with peer dependencies externali
 | `antd-dynamic-ui/hooks/use-safe-control` | Safe React Hook Form control hook | ✔ | `{ useSafeControl }` |
 | `antd-dynamic-ui/utils/generate-zod-schema`| Zod schema generator | ✔ | `{ generateZodSchema }` |
 | `antd-dynamic-ui/utils/get-initial-values` | Schema default value extractor | ✔ | `{ getInitialValues }` |
-| `antd-dynamic-ui/utils/api` | Configurable HTTP client | ✔ | `{ api, createApiClient }` |
+| `antd-dynamic-ui/utils/api` | Configurable HTTP client | ✔ | `{ api, createApiClient, uploadApi }` |
+| `antd-dynamic-ui/utils/main` | Type guards, debouncer & URL protection | ✔ | `{ isSafeUrl, isNotEmpty, debounce, ... }` |
+| `antd-dynamic-ui/utils/number-to-words` | Currency number-to-words converter | ✔ | `{ numberToWords }` |
+| `antd-dynamic-ui/utils/adjust-color` | Dynamic color tinting & shading | ✔ | `{ adjustColor }` |
+| `antd-dynamic-ui/utils/form-validation` | International phone validator | ✔ | `{ validatePhoneNumber }` |
+| `antd-dynamic-ui/utils` | All utilities barrel | ✔ | `*` |
 | `antd-dynamic-ui/types` | TypeScript interfaces & types | — | `*` |
 
 ---
@@ -642,6 +655,228 @@ const schema = generateZodSchema([
 - `validation.min` (`number`): Numerical lower bound.
 - `validation.max` (`number`): Numerical upper bound.
 - `validation.pattern` (`string`): Regex pattern validation.
+
+---
+
+## 🛠️ Utilities Reference
+
+`antd-dynamic-ui` includes a comprehensive set of standalone, tree-shakeable utility functions covering schema generation, HTTP requests, security sanitization, type guarding, string formatting, color manipulation, and theming.
+
+Every utility is available through three import styles depending on your bundling preference:
+
+| Import Style | Example | Bundle Impact |
+| :--- | :--- | :--- |
+| **Modular Subpath (Recommended)** | `import { generateZodSchema } from 'antd-dynamic-ui/utils/generate-zod-schema';` | 🚀 **~1.7 KB** (zero unused code) |
+| **Utils Barrel** | `import { generateZodSchema, api, isSafeUrl } from 'antd-dynamic-ui/utils';` | 📦 Imports only the utility suite |
+| **Root Package** | `import { generateZodSchema, api, isSafeUrl } from 'antd-dynamic-ui';` | 📦 Backward-compatible root export |
+
+---
+
+### 1. Form & Schema Utilities
+
+| Function | Modular Import Subpath | Root / Barrel Export | Parameters / Signature | Return Type | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`generateZodSchema`** | `antd-dynamic-ui/utils/generate-zod-schema` | `{ generateZodSchema }`<br>*(named & default)* | `(fieldsOrRows: FieldConfig[] \| FieldConfig[][])` | `z.ZodObject<any>` | Dynamically generates a flat Zod validation schema from 1D or 2D form field configurations. Automatically evaluates types (`string`, `email`, `url`, `number`, `checkbox`, `toggle`, `rating`, `slider`), validation limits (`min`, `max`, `minLength`, `maxLength`, `pattern`), required flags, and skips layout fields (`heading`, `divider`, `paragraph`, `chart`). |
+| **`getInitialValues`** | `antd-dynamic-ui/utils/get-initial-values` | `{ getInitialValues }`<br>*(named & default)* | `(fields: FieldConfig[] \| FieldConfig[][])` | `Record<string, any>` | Recursively extracts initial values `{ [id]: value ?? defaultValue }` from 1D or 2D field configurations. Ignores layout-only elements (`heading`, `divider`). |
+| **`validatePhoneNumber`** | `antd-dynamic-ui/utils/form-validation` | `{ validatePhoneNumber }`<br>*(named & default)* | `(val: string \| undefined, ctx: z.RefinementCtx)` | `void` | Validates international phone numbers against country dial codes and exact expected digit count using `headless-countries` metadata inside Zod `superRefine`. |
+
+---
+
+### 2. HTTP Client & API Helpers
+
+| Function / Object | Modular Import Subpath | Root / Barrel Export | Methods / Signature | Return Type | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`api`** | `antd-dynamic-ui/utils/api` | `{ api }`<br>*(named & default)* | `api.get(url, config)`<br>`api.post(url, data, config)`<br>`api.put(url, data, config)`<br>`api.patch(url, data, config)`<br>`api.delete(url, config)`<br>`api.request(config)` | `Promise<VelocityResponse<T>>` | Universal pre-configured HTTP client powered by `velocity-http`. Includes 15-second timeout, `application/json` headers, `withCredentials: true`, and standard platform headers. Delegates to the currently active global client instance. |
+| **`createApiClient`** | `antd-dynamic-ui/utils/api` | `{ createApiClient }` | `(config?: VelocityConfig)` | `Velocity` | Factory function to instantiate a new isolated `Velocity` HTTP client with custom `baseURL`, timeout, headers, credentials, or interceptors. |
+| **`setGlobalApiClient`** | `antd-dynamic-ui/utils/api` | `{ setGlobalApiClient }` | `(client: any)` | `void` | Replaces the default client instance used by the global `api` proxy with a custom client (useful for custom auth interceptors, mock testing, or tenant-specific headers). |
+| **`getGlobalApiClient`** | `antd-dynamic-ui/utils/api` | `{ getGlobalApiClient }` | `()` | `any` | Returns the currently active underlying HTTP client instance. |
+| **`uploadApi`** | `antd-dynamic-ui/utils/api` | `{ uploadApi }` | `.getPresignedUrl(data)`<br>`.verifyUpload(data)`<br>`.deleteFiles(keys)`<br>`.uploadFile(url, formData, config)` | `Promise<any>` | Standardized cloud upload helpers for presigned S3 / storage workflows with automatic `multipart/form-data` header handling. |
+
+---
+
+### 3. Security & URL Sanitization
+
+| Function | Modular Import Subpath | Root / Barrel Export | Parameters / Signature | Return Type | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`isSafeUrl`** | `antd-dynamic-ui/utils/main` | `{ isSafeUrl }` | `(url?: string)` | `boolean` | Validates URLs to protect against Cross-Site Scripting (XSS). Returns `false` for malicious protocol schemes such as `javascript:`, `vbscript:`, and `data:` URLs. Used internally by table action links, image renderers, and button redirects. |
+
+---
+
+### 4. Type Guards & Validation Helpers
+
+| Function | Modular Import Subpath | Root / Barrel Export | Parameters / Signature | Return Type | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`isArray`** | `antd-dynamic-ui/utils/main` | `{ isArray }` | `(a: any)` | `a is any[]` | Type guard checking if the value is a standard JavaScript Array. |
+| **`isNotEmptyArray`** | `antd-dynamic-ui/utils/main` | `{ isNotEmptyArray }` | `(a: T[] \| null \| undefined \| any)` | `a is NonNullable<T[]>` | Type guard checking if the value is an array with at least one element (`length > 0`). |
+| **`isString`** | `antd-dynamic-ui/utils/main` | `{ isString }` | `(a: any)` | `a is string` | Type guard checking if the value is a string primitive. |
+| **`isNotEmptyString`** | `antd-dynamic-ui/utils/main` | `{ isNotEmptyString }` | `(a: string \| null \| undefined \| any)` | `a is string` | Type guard checking if the string is non-empty after trimming whitespace (`trim().length > 0`). |
+| **`isObject`** | `antd-dynamic-ui/utils/main` | `{ isObject }` | `(a: any)` | `a is Record<string, any>` | Type guard checking if the value is a non-null object and not an array. |
+| **`isNotEmptyObject`** | `antd-dynamic-ui/utils/main` | `{ isNotEmptyObject }` | `(a: any)` | `a is NonNullable<T>` | Type guard verifying the object is non-null and has at least one own key (`Object.keys(a).length > 0`). |
+| **`isNumber`** | `antd-dynamic-ui/utils/main` | `{ isNumber }` | `(a: any)` | `a is number` | Type guard checking if the value is a valid numeric value (`typeof a === "number" && !isNaN(a)`). |
+| **`isNotEmptyNumber`** | `antd-dynamic-ui/utils/main` | `{ isNotEmptyNumber }` | `(a: any)` | `a is number` | Type guard checking if the value is a valid number and non-zero (`isNumber(a) && a !== 0`). |
+| **`isBoolean`** | `antd-dynamic-ui/utils/main` | `{ isBoolean }` | `(a: any)` | `a is boolean` | Type guard checking if the value is a boolean primitive (`typeof a === "boolean"`). |
+| **`isNotEmptyBoolean`**| `antd-dynamic-ui/utils/main` | `{ isNotEmptyBoolean }`| `(a: any)` | `a is true` | Type guard verifying the value is strictly `true`. |
+| **`isFunction`** | `antd-dynamic-ui/utils/main` | `{ isFunction }` | `(a: any)` | `a is (...args: any[]) => any` | Type guard checking if the value is a callable function. |
+| **`isNotEmptyFunction`**| `antd-dynamic-ui/utils/main` | `{ isNotEmptyFunction }`| `(a: any)` | `a is (...args: any[]) => any` | Type guard verifying the function expects at least one argument (`a.length > 0`). |
+| **`isNull`** | `antd-dynamic-ui/utils/main` | `{ isNull }` | `(a: any)` | `a is null` | Type guard checking if the value is strictly `null`. |
+| **`isUndefined`** | `antd-dynamic-ui/utils/main` | `{ isUndefined }` | `(a: any)` | `a is undefined` | Type guard checking if the value is strictly `undefined`. |
+| **`isNotEmpty`** | `antd-dynamic-ui/utils/main` | `{ isNotEmpty }` | `(a: any)` | `boolean` | Universal emptiness checker. Automatically delegates to string, array, object, number, boolean, or function checks. Returns `false` for `null`, `undefined`, empty strings, empty arrays, and empty objects. |
+
+---
+
+### 5. String, Formatting & Color Utilities
+
+| Function | Modular Import Subpath | Root / Barrel Export | Parameters / Signature | Return Type | Description |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`numberToWords`** | `antd-dynamic-ui/utils/number-to-words` | `{ numberToWords }`<br>*(named & default)* | `(amount: number, currency: string = "USD")` | `string` | Converts numerical amounts into formal English words with currency and cents handling (e.g. `12450.50` -> `"Twelve Thousand Four Hundred Fifty United States Dollar And Fifty Cents Only"`). Supports `"USD"`, `"INR"`, `"EUR"`, `"GBP"`. Ideal for invoices, receipts, and financial documents. |
+| **`adjustColor`** | `antd-dynamic-ui/utils/adjust-color` | `{ adjustColor }`<br>*(named & default)* | `(color: string, amount: number = 0)` | `string` | Dynamically tints or shades a hex color without external color libraries. Positive `amount` (+1 to +300) blends with white for lighter tints; negative `amount` (-1 to -150) blends with black for darker shades. Always returns a valid 6-character hex string (`#rrggbb`). |
+| **`debounce`** | `antd-dynamic-ui/utils/main` | `{ debounce }` | `(func: T, delay: number)` | `(...args: Parameters<T>) => void` | Creates a debounced function wrapper that delays invoking `func` until after `delay` milliseconds have elapsed since the last time it was called. Perfect for search inputs and window resize listeners. |
+| **`responseError`** | `antd-dynamic-ui/utils/main` | `{ responseError }` | `(err: any)` | `string` | Extracts a clean, human-readable error message from diverse API error structures (`err.response.data.message`, `err.data.message`, `err.message`, or fallback `"Something went wrong"`). |
+| **`generateLocaleKey`** | `antd-dynamic-ui/utils/main` | `{ generateLocaleKey }` | `(text: string)` | `string` | Converts arbitrary labels or sentences (e.g. `"First Name"`, `"User Profile - Settings"`) into standardized snake_case localization keys (e.g. `"first_name"`, `"user_profile_settings"`). |
+
+---
+
+### 6. Theme & Provider Utilities
+
+| Component / Utility | Modular Import Subpath | Root / Barrel Export | Props / Parameters | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **`AntdProvider`** | `antd-dynamic-ui/utils` | `{ AntdProvider }`<br>*(named & default)* | `{ children, mode?: "light" \| "dark", primaryColor?: string, token?: Record<string, any> }` | Pre-configured Ant Design `ConfigProvider` wrapper. Features automatic dark/light algorithm toggling, custom primary color token injection, dynamic custom scrollbar styles, and Ant Design `App` context. |
+
+---
+
+### 7. Utility Code Examples
+
+#### Example 1: Form Schema & Initial Values Generation
+```tsx
+import { generateZodSchema } from "antd-dynamic-ui/utils/generate-zod-schema";
+import { getInitialValues } from "antd-dynamic-ui/utils/get-initial-values";
+import type { FieldConfig } from "antd-dynamic-ui/types";
+
+const formFields: FieldConfig[][] = [
+  [
+    {
+      id: "fullName",
+      type: "input",
+      label: "Full Name",
+      defaultValue: "Jane Doe",
+      validation: { required: true, minLength: 2 },
+    },
+    {
+      id: "email",
+      type: "email",
+      label: "Work Email",
+      validation: { required: true },
+    },
+  ],
+];
+
+// 1. Generate runtime Zod validation schema
+const validationSchema = generateZodSchema(formFields);
+
+// 2. Extract initial values for react-hook-form
+const initialValues = getInitialValues(formFields);
+// => { fullName: "Jane Doe", email: undefined }
+```
+
+#### Example 2: API Client & Presigned Uploads
+```tsx
+import { api, createApiClient, uploadApi } from "antd-dynamic-ui/utils/api";
+
+// Use the default pre-configured client
+const fetchUsers = async () => {
+  const response = await api.get("/api/v1/users");
+  return response.data;
+};
+
+// Or create an isolated client with custom baseURL and auth token
+const customApi = createApiClient({
+  baseURL: "https://api.external-service.com",
+  headers: {
+    Authorization: "Bearer your-token-here",
+  },
+});
+
+// Cloud upload workflow
+const handleUpload = async (file: File) => {
+  const { data } = await uploadApi.getPresignedUrl({
+    filename: file.name,
+    contentType: file.type,
+    folder: "documents",
+  });
+  
+  const formData = new FormData();
+  formData.append("file", file);
+  await uploadApi.uploadFile(data.uploadUrl, formData);
+  await uploadApi.verifyUpload({ key: data.fileKey });
+};
+```
+
+#### Example 3: Security & URL Sanitization
+```tsx
+import { isSafeUrl } from "antd-dynamic-ui/utils/main";
+
+// Protect links, image sources, and redirects against XSS attacks
+const handleRedirect = (url: string) => {
+  if (!isSafeUrl(url)) {
+    console.warn("Blocked potentially malicious URL protocol:", url);
+    return;
+  }
+  window.location.href = url;
+};
+
+isSafeUrl("https://example.com/profile"); // true
+isSafeUrl("/internal-path");              // true
+isSafeUrl("javascript:alert(1)");        // false (blocked)
+isSafeUrl("data:text/html,<script>..."); // false (blocked)
+```
+
+#### Example 4: Color Shading & Financial Formatting
+```tsx
+import { adjustColor } from "antd-dynamic-ui/utils/adjust-color";
+import { numberToWords } from "antd-dynamic-ui/utils/number-to-words";
+
+// Generate hover & active brand shades dynamically
+const brandColor = "#1890ff";
+const hoverTint = adjustColor(brandColor, 40);   // Lighter tint for hover
+const activeShade = adjustColor(brandColor, -30); // Darker shade for active state
+
+// Spell out financial invoice totals
+const invoiceTotal = 15420.50;
+const words = numberToWords(invoiceTotal, "USD");
+// => "Fifteen Thousand Four Hundred Twenty United States Dollar And Fifty Cents Only"
+
+const inrWords = numberToWords(250000, "INR");
+// => "Two Hundred Fifty Thousand Indian Rupee Only"
+```
+
+#### Example 5: Type Guards, Debounce & Error Handling
+```tsx
+import {
+  isNotEmpty,
+  isNotEmptyArray,
+  isNotEmptyObject,
+  debounce,
+  responseError,
+} from "antd-dynamic-ui/utils/main";
+
+// Universal non-empty checks
+if (isNotEmpty(formData.items)) {
+  console.log("Items are present and valid");
+}
+
+// Debounced search handler
+const handleSearch = debounce((query: string) => {
+  api.get(`/api/v1/search?q=${encodeURIComponent(query)}`);
+}, 300);
+
+// Unified error parsing across API calls
+try {
+  await api.post("/api/v1/submit", payload);
+} catch (err) {
+  const message = responseError(err);
+  console.error("Submission failed:", message);
+}
+```
 
 ---
 

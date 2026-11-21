@@ -66,3 +66,5 @@ function currencyFull(curr: string): string {
             return curr || "Dollar";
     }
 }
+
+export default numberToWords;

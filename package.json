@@ -249,6 +249,21 @@
       "import": "./dist/utils/main/index.js",
       "require": "./dist/utils/main/index.cjs"
     },
+    "./utils/number-to-words": {
+      "types": "./dist/utils/number-to-words/index.d.ts",
+      "import": "./dist/utils/number-to-words/index.js",
+      "require": "./dist/utils/number-to-words/index.cjs"
+    },
+    "./utils/adjust-color": {
+      "types": "./dist/utils/adjust-color/index.d.ts",
+      "import": "./dist/utils/adjust-color/index.js",
+      "require": "./dist/utils/adjust-color/index.cjs"
+    },
+    "./utils/form-validation": {
+      "types": "./dist/utils/form-validation/index.d.ts",
+      "import": "./dist/utils/form-validation/index.js",
+      "require": "./dist/utils/form-validation/index.cjs"
+    },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.js",
